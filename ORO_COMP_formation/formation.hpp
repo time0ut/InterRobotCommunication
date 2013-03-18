@@ -14,23 +14,42 @@ namespace TTRK {
 #define VERSION 0.1
 #define DEBUG this->_debugNbPeriods!=0
 
+	/**
+	 * Current role of the robot
+	 *
+	 * This types allows to specify the role currently played by the robot.
+	 */
 	enum TypeRobotRole {
-		LEADER,		// Leader of the current mission => acts normally & broadcasts its position
-		FOLLOWER, 	// Following the leader => listens to leader's position and tries to reach it
-		NORMAL  	// Not taking part into any mission => component inactive
+		LEADER,		/**< the robot is the leader of the current mission. */
+		FOLLOWER, 	/**< the robot is involved in a mission. It is following a leader. */
+		NORMAL  	/**< the robot doesn't take part into any mission. */
 	};
 
+	/**
+	 * State of the mission
+	 *
+	 * This types allows to indicate the current phase of the formation component.
+	 */
 	enum MissionPhase {
-		INITIALIZATION,
-		FORMATION
+		INITIALIZATION,	/**< the component is in the initialization phase (configuration of the formation). */
+		FORMATION		/**< the component is in the formation phase (the formation is deployed). */
 	};
 
+
+	//! Formation class
+
+	/**
+	 * The formation class is an Orocos component allowing the deployment of a formation of robots
+	 * (N "followers" following a "leader" robot).
+	 * The communications between robots are based on Ivy software bus.
+	 */
 	class formation : public RTT::TaskContext
 	{
 	public:
 
 		formation(const std::string& name);
 		void updateHook();
+		bool configureHook();
 
 
 	protected:
@@ -38,15 +57,24 @@ namespace TTRK {
 		bool bye();
 		void ivyLoop();
 
+		// Operations
 		RTT::OperationCaller<bool(double,double,char) > c_cmdLawMoveTo;
 		RTT::OperationCaller<bool(double) > c_cmdLawRotate;
 		RTT::OperationCaller<bool() > c_cmdLawIsRunning;
+
+		// Ports
 		RTT::InputPort<PositionLocale> ip_relativePosition;
 
-		int  _debugNbPeriods;
+		// Properties
+		int p_identifier; // robot identifier
+		char p_role;
+		int _debugNbPeriods;
+
+		// Member data
 		PositionLocale _relative_position;
 		double _delta_x, _delta_y;
 		MissionPhase _phase;
+
 	};
 
 }
