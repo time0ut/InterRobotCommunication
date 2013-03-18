@@ -17,7 +17,7 @@ mkdir -p $LOCAL/lib/ivy $LOCAL/include/Ivy $GSTIX/lib/ivy $GSTIX/include/Ivy
 # ---- PCRE
 # Download tarball
 echo "*** Downloading PCRE sources"
-wget --no-proxy "http://downloads.sourceforge.net/project/pcre/pcre/$PCREVER/pcre-$PCREVER.tar.gz"
+wget "http://downloads.sourceforge.net/project/pcre/pcre/$PCREVER/pcre-$PCREVER.tar.gz"
 echo "*** Done"
 # Extract
 echo "*** Extracting PCRE sources"
