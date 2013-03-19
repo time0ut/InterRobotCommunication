@@ -101,6 +101,7 @@ void formation::updateHook()
 					msg_sent ++;
 				}
 
+				IvySendMsg("GOGOGO");
 				// Now let's start the second phase
 				_phase = FORMATION;
 			}
