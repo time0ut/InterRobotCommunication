@@ -29,6 +29,7 @@ void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 
 std::map <string, MsgRcvPtr> filters;
 std::list <PositionLocale> steps;
@@ -93,6 +94,9 @@ void formation::updateHook()
 				IvyUnbindMsg( filters.find ( "follow_yes" )->second );
 				filters.erase( filters.find("follow_yes") );
 
+				filters.insert( pair<string, MsgRcvPtr> ( "in_position",
+						IvyBindMsg ( inPositionCallback, 0, "^IN_POSITION$" )));
+
 				int msg_sent ( 0 );
 				while ( ! followers.empty() && msg_sent < NB_FOLLOWERS )
 				{
@@ -101,7 +105,6 @@ void formation::updateHook()
 					msg_sent ++;
 				}
 
-				IvySendMsg("GOGOGO");
 				// Now let's start the second phase
 				_phase = FORMATION;
 			}
@@ -229,18 +232,17 @@ void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
 	if ( role == NORMAL ) // If the robot isn't already in a formation
 	{
-		IvySendMsg ( "FOLLOW_YES %d", id ); // I'm in!
-
 		// Desactivate follow requests
 		IvyUnbindMsg( filters.find ( "follow_req" )->second );
 		filters.erase( filters.find("follow_req") );
-
 
 		// Wait for a confirmation or a cancellation
 		filters.insert( pair<string, MsgRcvPtr> ( "follow_me",
 				IvyBindMsg ( followMeCallback, 0, "^FOLLOW_ME (.*)" )));
 		filters.insert( pair<string, MsgRcvPtr> ( "ignore_req",
 				IvyBindMsg ( ignoreReqCallback, 0, "^IGNORE_REQ (.*)" )));
+
+		IvySendMsg ( "FOLLOW_YES %d", id ); // I'm in!
 	}
 }
 
@@ -274,7 +276,6 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     token = strtok_r( args, &delim, &saveptr );
     if (token != NULL) f_id = ::atoi(token);
 
-    IvySendMsg("f_id: %d     id:  %d     role: %c", f_id, id, role);
     // Am I concerned by this message ?
     if ( f_id == id )
     {
@@ -292,7 +293,16 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 		filters.erase( filters.find("ignore_req") );
 
 		role = FOLLOWER;
+		IvySendMsg ("IN_POSITION");
     }
+}
+
+void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv)
+{
+	IvyUnbindMsg( filters.find ( "in_position" )->second );
+	filters.erase( filters.find("in_position") );
+
+	IvySendMsg ( "GOGOGO" );
 }
 
 void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
