@@ -47,7 +47,7 @@ namespace TTRK {
 	{
 	public:
 		/**
-		 *
+		 * @param name
 		 */
 		formation(const std::string& name);
 

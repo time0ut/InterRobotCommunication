@@ -145,7 +145,7 @@ void formation::updateHook()
 //						// Wait for movement to be executed:
 //						while ( c_cmdLawIsRunning () );
 //					}
-
+/*
 										if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
 										{
 											c_cmdLawRotate ( wp.cap );
@@ -153,6 +153,7 @@ void formation::updateHook()
 											// Wait for movement to be executed:
 											while ( c_cmdLawIsRunning () );
 										}
+*/
 					// Send command law if necessary
 
 					if ( wp.x != this->_relative_position.x || wp.y != this->_relative_position.y )
