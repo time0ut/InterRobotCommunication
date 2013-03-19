@@ -125,6 +125,7 @@ void formation::updateHook()
 	}
 	else if ( role == FOLLOWER )
 	{
+		p_role = 'F';
 			if ( ! c_cmdLawIsRunning () ) // If the robot stopped moving
 			{
 				if ( ! steps.empty () ) // If there is a next step
@@ -276,7 +277,7 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     // Am I concerned by this message ?
     if ( f_id == id )
     {
-    	IvySendMsg("I'm a follower %d", id)
+    	IvySendMsg("I'm a follower %d", id);
 		// TODO:  Read fields (delta, start pos) + call command law
 
 		// Now wait for a start notification
@@ -290,7 +291,6 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 		filters.erase( filters.find("ignore_req") );
 
 		role = FOLLOWER;
-		p_role = 'F';
     }
 }
 
