@@ -7,7 +7,7 @@
 #include <sstream>
 
 
-#include "MavDataTypes.h"
+
 #include "formation.hpp"
 
 // Formation constants :
@@ -161,7 +161,9 @@ void formation::updateHook()
 */
 					// Send command law if necessary
 
-					if ( wp.x != this->_relative_position.x || wp.y != this->_relative_position.y )
+					if ( 	wp.x != this->_relative_position.x ||
+							wp.y != this->_relative_position.y ||
+							abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
 					{
 
 					/*	typedef struct
@@ -175,12 +177,11 @@ void formation::updateHook()
 							float thrust; ///< thrust
 							bool thrust_manual;
 							float h_rate;
-
 						}TypeInfosJoystickMavLink;
 						*/
-						pos.roll = pos.roll - wp.x; // or y??
-						pos.pitch = pos.pitch - wp.y;
-						pos.yaw = pos.yaw - wp.cap;
+						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
+						pos.pitch = (true) ? 0.2 : -0.2;
+						pos.roll = (this->_relative_position.cap < wp.cap) ? 0.2 : -0.2;
 
 						op_joystick.write(pos);
 				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
@@ -332,6 +333,8 @@ void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	IvyUnbindMsg( filters.find ( "in_position" )->second );
 	filters.erase( filters.find("in_position") );
 
+	// TODO: here count the number of "IN_POSITION" messages received
+	// and send GOGOGO once everyone has replied.
 	IvySendMsg ( "GOGOGO" );
 }
 
