@@ -14,6 +14,8 @@
  // Number of followers needed by the leader to pilot the formation
 #define  NB_FOLLOWERS 1		// For now, simulate with just 1 follower
 
+#define CAP_TRESHOLD 5
+
 namespace TTRK {
 
 using namespace std;
@@ -73,7 +75,6 @@ formation::formation(const std::string& name) :
 	this->requires()->addOperationCaller(this->c_cmdLawIsRunning);
 
 	// TMP debug
-	_relative_position.x = 3.;
 	this->init();
 }
 
@@ -137,24 +138,29 @@ void formation::updateHook()
 					PositionLocale wp = (PositionLocale) steps.front ();
 					steps.pop_front();
 
-					if ( wp.cap != _relative_position.cap )
-					{
-						c_cmdLawRotate ( wp.cap );
+//					if ( wp.cap != _relative_position.cap )
+//					{
+//						c_cmdLawRotate ( wp.cap );
+//
+//						// Wait for movement to be executed:
+//						while ( c_cmdLawIsRunning () );
+//					}
 
-						// Wait for movement to be executed:
-						while ( c_cmdLawIsRunning () );
-					}
+										if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
+										{
+											c_cmdLawRotate ( wp.cap );
 
+											// Wait for movement to be executed:
+											while ( c_cmdLawIsRunning () );
+										}
 					// Send command law if necessary
+
 					if ( wp.x != this->_relative_position.x || wp.y != this->_relative_position.y )
 					{
-						IvySendMsg ("Calling cmd law");
 						c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
 
 					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
 					}
-
-
 				}
 			}
 	}
@@ -279,7 +285,6 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     // Am I concerned by this message ?
     if ( f_id == id )
     {
-    	IvySendMsg("I'm a follower %d", id);
 		// TODO:  Read fields (delta, start pos) + call command law
 
 		// Now wait for a start notification
@@ -321,7 +326,6 @@ void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     // Am I concerned by this message ?
     if ( f_id == id )
     {
-
 		IvyUnbindMsg( filters.find ( "follow_me" )->second );
 		IvyUnbindMsg( filters.find ( "ignore_req" )->second );
 		filters.erase( filters.find("follow_me") );
@@ -371,8 +375,6 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     token = strtok_r(NULL, &delim, &saveptr);
     if (token != NULL) goal.cap = ::atof(token);
     steps.push_back( goal );
-    // TMP (debug)
-	IvySendMsg ("Position to reach: %lf %lf, cap: %lf", goal.x, goal.y, goal.cap);
 }
 
 //void formation::endOfFormationCallback (IvyApplication *app, void *data, int argc, char **argv)
