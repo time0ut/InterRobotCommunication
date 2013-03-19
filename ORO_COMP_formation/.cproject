@@ -36,6 +36,7 @@
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.451963106" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1512758112" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
+									<listOptionValue builtIn="false" value="/home/dmia/workspace"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/include"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include/orocos"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include"/>

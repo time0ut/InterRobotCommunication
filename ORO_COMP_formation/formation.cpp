@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "formation.hpp"
+#include <string>
 
 // Formation constants :
  // Send position every 10 calls to "updateHook"
@@ -36,6 +37,7 @@ void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 std::map <string, MsgRcvPtr> filters;
 std::list <PositionLocale> steps;
 std::list <int> followers;
+std::list <int>::const_iterator followeri;
 TypeRobotRole role = FOLLOWER;
 int id;
 
@@ -81,6 +83,9 @@ formation::formation(const std::string& name) :
 void formation::updateHook()
 {
 	static int countdown = REFRESH_PERIOD;
+	static std::ofstream outfile ("roundtripdelay.txt");//for performance evaluation, the file where we store the time of broadcast and reception of messages
+	uint64_t timeNow;
+
 
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
@@ -99,33 +104,59 @@ void formation::updateHook()
 						IvyBindMsg ( inPositionCallback, 0, "^IN_POSITION$" )));
 
 				int msg_sent ( 0 );
-				while ( ! followers.empty() && msg_sent < NB_FOLLOWERS )
+
+				/*while ( ! followers.empty() && msg_sent < NB_FOLLOWERS )
 				{
 					IvySendMsg ( "FOLLOW_ME %d", followers.front() );
 					followers.pop_front();
+					followers.
 					msg_sent ++;
-				}
+				}*/
+				for( followeri=followers.begin() ;msg_sent < NB_FOLLOWERS;followeri++,msg_sent ++ )
+								{
+									IvySendMsg ( "FOLLOW_ME %d", followeri );
 
+
+								}
+				// Once formation has started, the leader can send a cancellation
+				// message to the followers that were not chosen
+				/*if ( ! followers.empty() )
+				{
+					while ( ! followers.empty () )
+					{
+						IvySendMsg ( "IGNORE_REQ %d", followers.front() );
+						followers.pop_front();
+					}
+				}*/
+				for ( ;followeri!=followers.end() ;followeri++)
+				{
+							IvySendMsg ( "IGNORE_REQ %d", followeri );
+
+				}
 				// Now let's start the second phase
 				_phase = FORMATION;
+				followeri=followers.begin();
 			}
 		}
 		else if ( _phase == FORMATION )
 		{
-			// Once formation has started, the leader can send a cancellation
-			// message to the followers that were not chosen
-			if ( ! followers.empty() )
-			{
-				while ( ! followers.empty () )
-				{
-					IvySendMsg ( "IGNORE_REQ %d", followers.front() );
-					followers.pop_front();
-				}
-			}
+			timeNow = os::TimeService::Instance()->getNSecs()/1000;
+
 			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
 			IvySendMsg("CONTROL %lf %lf %lf %lf", this->_relative_position.x,
 						this->_relative_position.y, 0., this->_relative_position.cap );
+			//for performance evaluation
+			echoid++;
+			followeri++;
+			if(echoid==NB_FOLLOWERS){
+				echoid=0;
+				followeri=followers.begin();
+			}
+			if(seq<perforperiodnum)
+						time[seq][0]=timeNow;
+			seq++;
 		}
+
 		countdown = REFRESH_PERIOD; // Restart timer
 	}
 	else if ( role == FOLLOWER )
@@ -193,6 +224,9 @@ bool formation::configureHook()
 	{ // The very first message the leader with receive is a DO_DEMO (see specs)
 		filters.insert( pair<string, MsgRcvPtr> ( "do_demo",
 				IvyBindMsg ( doDemoCallback, 0, "^DO_DEMO$" )));
+		//only for network performance evaluation
+		filters.insert( pair<string, MsgRcvPtr> ( "control",
+						IvyBindMsg ( doDemoCallback, 0, "^CONTROL(.*)" )));
 	}
 
 
@@ -364,6 +398,8 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     PositionLocale goal;
 
     args = argv[0];
+
+
 
     token = strtok_r(args, &delim, &saveptr);
     if (token != NULL) goal.x = ::atof(token);

@@ -13,6 +13,7 @@ namespace TTRK {
 #define COMPONENT_NAME "formation"
 #define VERSION 0.1
 #define DEBUG this->_debugNbPeriods!=0
+#define perforperiodnum 100//number of periods during which we store the time of broadcast and reception of messages
 
 	/**
 	 * Current role of the robot
@@ -84,6 +85,11 @@ namespace TTRK {
 		PositionLocale _relative_position;
 		double _delta_x, _delta_y;
 		MissionPhase _phase;
+
+		//for network performance evaluation
+		uint64_t time[perforperiodnum][2];
+		int seq=0;//sequence number of the message
+		int echoid=0;
 
 	};
 
