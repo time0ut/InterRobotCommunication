@@ -1,0 +1,170 @@
+path("/home/dmia/OROCOS_Samples")
+import("OrocosComponents")
+
+require("print")
+print.ln("")
+
+
+print.ln("=== Chargement des composants ===")
+loadComponent("RessourcesManagerUGV","TTRK::resourcesManager")
+loadComponent("ServicesManagerUGV","TTRK::servicesManagerUGV")
+loadComponent("ObstacleAvoidance","TTRK::ObstacleAvoidance")
+loadComponent("GestionMission","TTRK::GestionMission_UGV")
+loadComponent("mav","TTRK::MavLink")
+loadComponent("stateEstimation","TTRK::stateEstimationUGV")
+loadComponent("slam","TTRK::Slam")
+loadComponent("comm","TTRK::commandLawUGV")
+loadComponent("attitude","AttitudeSimuMorse")
+loadComponent("position","PositionSimuMorse")
+loadComponent("telem","TelemetreSimuMorse")
+loadComponent("cicas","CicasSimuMorse")
+loadComponent("camera","Camera_simu")
+loadComponent("formation","TTRK::formation")
+loadComponent("ivylauncher","TTRK::IvyLauncher")
+
+loadComponent("Cout","OCL::HMIConsoleOutput")
+
+
+print.ln("chargement composant Image_processing ...")
+loadComponent("imgproc","TTRK::Image_processing")
+print.ln("chargement composant Image_record ...")
+loadComponent("imgrec","TTRK::Image_record")
+
+print.ln("")
+
+print.ln("=== Définition des activations et priorités ...")
+setActivity("ObstacleAvoidance",0.1,10,ORO_SCHED_RT)
+setActivity("ServicesManagerUGV",0.1,3,ORO_SCHED_RT)
+setActivity("GestionMission",0.1,3,ORO_SCHED_RT)
+setActivity("RessourcesManagerUGV",0.1,3,ORO_SCHED_RT)
+setActivity("mav",0.05,9,ORO_SCHED_OTHER)
+setActivity("stateEstimation",0.1,10,ORO_SCHED_OTHER)
+setActivity("attitude",0.05,10,ORO_SCHED_OTHER)
+setActivity("position",0.05,7,ORO_SCHED_OTHER)
+setActivity("telem",0.1,8,ORO_SCHED_OTHER)
+setActivity("comm",0,10,ORO_SCHED_OTHER)
+setActivity("cicas",0.01,10,ORO_SCHED_OTHER)
+setActivity("camera",0.05,3,ORO_SCHED_OTHER)
+setActivity("formation",0.01,3,ORO_SCHED_OTHER)
+setActivity("ivylauncher",0,3,ORO_SCHED_OTHER)
+
+
+
+setActivity("imgproc",0,7,ORO_SCHED_RT)
+setActivity("imgrec",0,4,ORO_SCHED_RT)
+print.ln("")
+
+print.ln("=== Definition Transport YARP ===")
+var ConnPolicy yarp_conn_policy
+yarp_conn_policy.transport = 89
+print.ln("")
+
+comm.robotType=0
+print.ln("=== Définition des ports YARP ...")
+stream("position.inputMorsePosition", yarp_conn_policy)
+stream("telem.inputMorseTelem", yarp_conn_policy)
+stream("attitude.inputMorseAttitude", yarp_conn_policy)
+stream("cicas.outputMorseVitesse", yarp_conn_policy)
+print.ln("")
+
+print.ln("=== Connection des ports OROCOS...")
+connectPorts("mav","stateEstimation")
+connectPorts("attitude","stateEstimation")
+connectPorts("position","stateEstimation")
+connectPorts("telem","stateEstimation")
+connectPorts("cicas","stateEstimation")
+connectPorts("stateEstimation","comm")
+connectPorts("telem","slam")
+connectPorts("slam","stateEstimation")
+connectPorts("mav","comm")
+connectPorts("ObstacleAvoidance","telem")
+connectPorts("ObstacleAvoidance","comm")
+connectPorts("ServicesManagerUGV","RessourcesManagerUGV")
+connectPorts("ServicesManagerUGV","mav")
+connectPorts("GestionMission","mav")
+connectPorts("attitude","RessourcesManagerUGV")
+connectPorts("position","RessourcesManagerUGV")
+connectPorts("telem","RessourcesManagerUGV")
+connectPorts("cicas","RessourcesManagerUGV")
+connectPorts("camera","imgproc")
+connectPorts("imgproc","imgrec")
+connectPorts("imgproc","comm")
+connectPorts("slam","formation")
+
+
+
+print.ln("")
+
+print.ln("=== Connection des services OROCOS ...")
+connectServices("cicas","comm")
+connectServices("comm","ServicesManagerUGV")
+connectServices("ServicesManagerUGV","GestionMission")
+connectServices("formation","comm")
+connectServices("comm","formation")
+connectServices("formation","ivylauncher")
+connectServices("ivylauncher","formation")
+print.ln("")
+
+print.ln("=== Configuration @ MAVLINK ===")
+#adresse ip ssmd par reseau ecole:
+mav.adresseUDPMavLink = "10.162.2.10"
+#adresse ip ssmd par reseau PRAT-DMIA:
+#mav.adresseUDPMavLink = "10.255.100.30"
+mav.vectorId = "ID_VECTOR_SIMU_05"
+print.ln("")
+
+print.ln("=== Configuration nom port camera ===")
+camera.namePortMorse = "/port_camera_local2"
+print.ln("")
+
+print.ln("=== Configuration formation ===")
+formation.identifier = 42
+# L = LEADER
+formation.role = 'N'
+print.ln("")
+
+print.ln("=== Etape de configuration ===")
+RessourcesManagerUGV.configure
+ServicesManagerUGV.configure
+ObstacleAvoidance.configure
+GestionMission.configure
+mav.configure
+stateEstimation.configure
+attitude.configure
+position.configure
+telem.configure
+slam.configure
+cicas.configure
+comm.configure
+camera.configure
+imgproc.configure
+imgrec.configure
+formation.configure
+ivylauncher.configure
+print.ln("")
+
+print.ln("=== Démarrage des Composants===")
+RessourcesManagerUGV.start
+ServicesManagerUGV.start
+#ObstacleAvoidance.start
+GestionMission.start
+mav.start
+stateEstimation.start
+attitude.start
+position.start
+telem.start
+slam.start
+cicas.start
+comm.start
+#camera.start
+#imgproc.start
+#imgrec.start
+formation.start
+ivylauncher.start
+print.ln("")
+
+print.ln("=== Tele operation  ===")
+comm.Teleoperation()
+print.ln("=========== END OF INIT ===============")
+print.ln("")
+
