@@ -139,7 +139,7 @@ void formation::updateHook()
 
 					if ( wp.cap != _relative_position.cap )
 					{
-						c_cmdLawRotate ( wp.cap - _relative_position.cap );
+						c_cmdLawRotate ( wp.cap );
 
 						// Wait for movement to be executed:
 						while ( c_cmdLawIsRunning () );
@@ -331,7 +331,6 @@ void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 		filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 				IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
     }
-
 }
 
 void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
