@@ -179,8 +179,7 @@ bool formation::configureHook()
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
 	}
 	else if ( role == LEADER )
-	{ // The very first message the leader with receive is a FOLLOW_YES (see specs)
-
+	{ // The very first message the leader with receive is a DO_DEMO (see specs)
 		filters.insert( pair<string, MsgRcvPtr> ( "do_demo",
 				IvyBindMsg ( doDemoCallback, 0, "^DO_DEMO$" )));
 	}
@@ -218,7 +217,7 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 			IvyBindMsg ( followYesCallback, 0, "^FOLLOW_YES (.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
-			IvyBindMsg ( followYesCallback, 0, "^STOP_DEMO$" )));
+			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
 
 	IvySendMsg("FOLLOW_REQ");
 
@@ -305,7 +304,7 @@ void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     token = strtok_r( args, &delim, &saveptr );
     if (token != NULL) f_id = ::atoi(token);
 
-    // Am I concerned by this follow me message ?
+    // Am I concerned by this message ?
     if ( f_id == id )
     {
 
