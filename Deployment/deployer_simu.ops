@@ -90,7 +90,8 @@ connectPorts("camera","imgproc")
 connectPorts("imgproc","imgrec")
 connectPorts("imgproc","comm")
 connectPorts("slam","formation")
-
+connectPorts("formation", "comm")
+connectPorts("formation", "stateEstimation")
 
 
 print.ln("")
@@ -114,13 +115,13 @@ mav.vectorId = "ID_VECTOR_SIMU_05"
 print.ln("")
 
 print.ln("=== Configuration nom port camera ===")
-camera.namePortMorse = "/port_camera_local2"
+camera.namePortMorse = "/port_camera_local3"
 print.ln("")
 
 print.ln("=== Configuration formation ===")
-formation.identifier = 42
+formation.identifier = 10
 # L = LEADER
-formation.role = 'N'
+formation.role = 'L'
 print.ln("")
 
 print.ln("=== Etape de configuration ===")
