@@ -6,24 +6,26 @@
 #include <map>
 #include <sstream>
 
-
-
 #include "formation.hpp"
 
 // Formation constants :
  // Send position every 10 calls to "updateHook"
 #define  REFRESH_PERIOD 100
+
  // Number of followers needed by the leader to pilot the formation
 #define  NB_FOLLOWERS 1		// For now, simulate with just 1 follower
 
+// The follower own't update its orientation if it is already close from
+// the desired (leader) orientation. The threshold is in degrees.
 #define CAP_TRESHOLD 5
+
 
 namespace TTRK {
 
 using namespace std;
 using namespace RTT;
 
-
+// Declaration of Ivy messages callback functions
 void newWPCallback (IvyClientPtr app, void *data, int argc, char **argv);
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv);
 void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv);
@@ -34,13 +36,32 @@ void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 
+// Desired position sent by the followers to the command law (via output port Formation::op_joystick)
 TypeInfosJoystickMavLink pos;
+
+// Ivy filters currently used by the robot (kept up-to-date in real time)
 std::map <string, MsgRcvPtr> filters;
+
+// List of successive positions the follower has to reach to follow the leader
 std::list <PositionLocale> steps;
+
+// List of candidates to enter the formation as followers
+std::list <int> candidates;
+
+// List of followers
 std::list <int> followers;
-TypeRobotRole role = FOLLOWER;
-int id;
+
+// Robot role
+TypeRobotRole role = NORMAL;
+// Robot ID number
+int id = 0;
+// Mission phase
+MissionPhase phase;
+
+// Number of followers ready to move
+int nb_answers = 0;
 
 //constructor
 formation::formation(const std::string& name) :
@@ -51,9 +72,8 @@ formation::formation(const std::string& name) :
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
 						op_joystick ( "joystick" ),
-						_phase ( INITIALIZATION ),
-						p_identifier ( 0 ),
-						p_role ( 'N' )
+//						_phase ( INITIALIZATION ),
+						p_identifier ( 0 )
 
 {
 	cout<<"component "<< COMPONENT_NAME <<" build version:"<< VERSION << "on "<< __DATE__ <<" at "<< __TIME__<<endl;
@@ -68,7 +88,6 @@ formation::formation(const std::string& name) :
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
-	this->addProperty( "role", this->p_role ).doc ( "robot role" );
 
 	// Operations
 	this->provides()->addOperation("IvyLoop", &formation::ivyLoop, this);
@@ -92,9 +111,9 @@ void formation::updateHook()
 
 	if ( role == LEADER && countdown -- <= 0 )  // Time to refresh
 	{
-		if ( _phase == INITIALIZATION )
+		if ( phase == INITIALIZATION )
 		{
-			if ( followers.size() >= NB_FOLLOWERS )
+			if ( candidates.size() >= NB_FOLLOWERS )
 			{ // Sending a personal confirmation message to all chosen robots
 				// Stop listening to candidates
 				IvyUnbindMsg( filters.find ( "follow_yes" )->second );
@@ -104,29 +123,28 @@ void formation::updateHook()
 						IvyBindMsg ( inPositionCallback, 0, "^IN_POSITION$" )));
 
 				int msg_sent ( 0 );
-				while ( ! followers.empty() && msg_sent < NB_FOLLOWERS )
+				while ( ! candidates.empty() && msg_sent < NB_FOLLOWERS )
 				{
-					IvySendMsg ( "FOLLOW_ME %d", followers.front() );
-					followers.pop_front();
+					IvySendMsg ( "FOLLOW_ME %d", candidates.front() );
+					candidates.pop_front();
 					msg_sent ++;
 				}
-
+				// Once formation has started, the leader can send a cancellation
+				// message to the followers that were not chosen
+				if ( ! candidates.empty() )
+				{
+					while ( ! candidates.empty () )
+					{
+						IvySendMsg ( "IGNORE_REQ %d", candidates.front() );
+						candidates.pop_front();
+					}
+				}
 				// Now let's start the second phase
-				_phase = FORMATION;
+				phase = FORMATION;
 			}
 		}
-		else if ( _phase == FORMATION )
+		else if ( phase == FORMATION )
 		{
-			// Once formation has started, the leader can send a cancellation
-			// message to the followers that were not chosen
-			if ( ! followers.empty() )
-			{
-				while ( ! followers.empty () )
-				{
-					IvySendMsg ( "IGNORE_REQ %d", followers.front() );
-					followers.pop_front();
-				}
-			}
 			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
 			IvySendMsg("CONTROL %lf %lf %lf %lf", this->_relative_position.x,
 						this->_relative_position.y, 0., this->_relative_position.cap );
@@ -135,60 +153,43 @@ void formation::updateHook()
 	}
 	else if ( role == FOLLOWER )
 	{
-		p_role = 'F';
-			if ( ! c_cmdLawIsRunning () ) // If the robot stopped moving
+		if ( ! c_cmdLawIsRunning () ) // If the robot stopped moving
+		{
+			if ( ! steps.empty () ) // If there is a next step
 			{
-				if ( ! steps.empty () ) // If there is a next step
-				{
-					PositionLocale wp = (PositionLocale) steps.front ();
-					steps.pop_front();
+				PositionLocale wp = (PositionLocale) steps.front ();
+				steps.pop_front();
 
-//					if ( wp.cap != _relative_position.cap )
-//					{
-//						c_cmdLawRotate ( wp.cap );
+//				if ( wp.cap != _relative_position.cap )
+//				{
+//					c_cmdLawRotate ( wp.cap );
 //
-//						// Wait for movement to be executed:
-//						while ( c_cmdLawIsRunning () );
-//					}
+//					// Wait for movement to be executed:
+//					while ( c_cmdLawIsRunning () );
+//				}
 /*
-										if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
-										{
-											c_cmdLawRotate ( wp.cap );
+				if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
+				{
+					c_cmdLawRotate ( wp.cap );
 
-											// Wait for movement to be executed:
-											while ( c_cmdLawIsRunning () );
-										}
+					// Wait for movement to be executed:
+					while ( c_cmdLawIsRunning () );
+				}
 */
-					// Send command law if necessary
-
-					if ( 	wp.x != this->_relative_position.x ||
-							wp.y != this->_relative_position.y ||
-							abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
-					{
-
-					/*	typedef struct
-						{
-							//INT8 controlMode;
-							int_least8_t controlMode;
-							//TypeAxes manualControlTc;
-							float roll; ///< roll
-							float pitch; ///< pitch
-							float yaw; ///< yaw
-							float thrust; ///< thrust
-							bool thrust_manual;
-							float h_rate;
-						}TypeInfosJoystickMavLink;
-						*/
+				// Send command law if necessary
+				if ( 	wp.x != this->_relative_position.x ||
+						wp.y != this->_relative_position.y ||
+						abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
+				{
 						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
 						pos.pitch = (true) ? 0.2 : -0.2;
 						pos.roll = (this->_relative_position.cap < wp.cap) ? 0.2 : -0.2;
 
 						op_joystick.write(pos);
 				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
-					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
-					}
 				}
 			}
+		}
 	}
 	// If current role is 'NORMAL', don't do anything
 }
@@ -196,38 +197,22 @@ void formation::updateHook()
 
 bool formation::configureHook()
 {
-	if ( p_role == 'L' )
-	{
-		role = LEADER;
-	}
-	else if ( p_role == 'F' )
-	{
-		role = FOLLOWER;
-	}
-	else if ( p_role == 'N' )
-	{
-		role = NORMAL;
-	}
-
-
-	if ( role == NORMAL )
-	{
-		filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
+	// Start listening to leader and follower promotions
+	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
-	}
-	else if ( role == LEADER )
-	{ // The very first message the leader with receive is a DO_DEMO (see specs)
-		filters.insert( pair<string, MsgRcvPtr> ( "do_demo",
-				IvyBindMsg ( doDemoCallback, 0, "^DO_DEMO$" )));
-	}
 
+	filters.insert( pair<string, MsgRcvPtr> ( "leader",
+			IvyBindMsg ( followReqCallback, 0, "^LEADER (.*)" )));
 
+	// Retrieve robot ID
 	id = p_identifier;
+
 	return true;
 }
 
 void formation::ivyLoop()
 {
+	// Start Ivy infinite loop
 	IvyMainLoop();
 }
 
@@ -236,6 +221,7 @@ void formation::init()
 }
 
 bool formation::bye(){
+	// Stop Ivy bus (interrupts Ivy infinite loop)
 	IvyStop();
 
 	return true;
@@ -244,6 +230,39 @@ bool formation::bye(){
 /******************************************************************************/
 /************************ INITIALIZATION PHASE CALLBACKS **********************/
 /******************************************************************************/
+
+void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv)
+{
+	char *args;
+	char *token;
+    char *saveptr;
+    char delim = ' ';
+    int f_id;
+
+    args = argv[0];
+
+    // Read identifier of the addressee
+    token = strtok_r( args, &delim, &saveptr );
+    if (token != NULL) f_id = ::atoi(token);
+
+    // Am I concerned by this message ?
+    if ( f_id == id )
+    {
+    	// Stop listening to follower and leader promotions
+		IvyUnbindMsg( filters.find ( "leader" )->second );
+		IvyUnbindMsg( filters.find ( "follow_req" )->second );
+		filters.erase( filters.find("leader") );
+		filters.erase( filters.find("follow_req") );
+
+		// The very first message the leader will receive is a DO_DEMO (see specs)
+			filters.insert( pair<string, MsgRcvPtr> ( "do_demo",
+					IvyBindMsg ( doDemoCallback, 0, "^DO_DEMO$" )));
+
+		// I'm the new leader
+		role = LEADER;
+    }
+}
+
 void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
 	// Desactivate do demo request
@@ -256,17 +275,19 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
 			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
 
+	// Ask for candidate followers
 	IvySendMsg("FOLLOW_REQ");
-
 }
 
 void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
 	if ( role == NORMAL ) // If the robot isn't already in a formation
 	{
-		// Desactivate follow requests
+		// Stop listening to follower and leader promotions
+		IvyUnbindMsg( filters.find ( "leader" )->second );
 		IvyUnbindMsg( filters.find ( "follow_req" )->second );
 		filters.erase( filters.find("follow_req") );
+		filters.erase( filters.find("leader") );
 
 		// Wait for a confirmation or a cancellation
 		filters.insert( pair<string, MsgRcvPtr> ( "follow_me",
@@ -291,7 +312,7 @@ void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     token = strtok_r( args, &delim, &saveptr );
     if (token != NULL) f_id = ::atoi(token);
 
-    followers.push_back( f_id );
+    candidates.push_back( f_id );
 }
 
 void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
@@ -330,12 +351,16 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 
 void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
-	IvyUnbindMsg( filters.find ( "in_position" )->second );
-	filters.erase( filters.find("in_position") );
+	nb_answers ++;
 
-	// TODO: here count the number of "IN_POSITION" messages received
-	// and send GOGOGO once everyone has replied.
-	IvySendMsg ( "GOGOGO" );
+	// If all the followers are now in position (send GOGOGO once everyone has replied)
+	if ( nb_answers == NB_FOLLOWERS )
+	{
+		IvyUnbindMsg( filters.find ( "in_position" )->second );
+		filters.erase( filters.find("in_position") );
+
+		IvySendMsg ( "GOGOGO" );
+	}
 }
 
 void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv)
@@ -405,27 +430,45 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     steps.push_back( goal );
 }
 
-//void formation::endOfFormationCallback (IvyApplication *app, void *data, int argc, char **argv)
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv)
 {
-	// Unsubscribe (desactivate the filters)
+	// Unsubscribe from control orders or end of mission notification
 	IvyUnbindMsg( filters.find ( "control" )->second );
 	IvyUnbindMsg( filters.find ( "leave_me_alone" )->second );
 	filters.erase ( filters.find ("control" ));
 	filters.erase ( filters.find ("leave_me_alone" ));
 
-	// Start again listening to follow request from leaders
+	// Back to normal mode
+	role = NORMAL;
+	// Back to first phase
+	phase = INITIALIZATION;
+
+	// Start again listening to follow request from leaders or to leader promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
 
-	// Back to normal mode
-	role = NORMAL;
+	filters.insert( pair<string, MsgRcvPtr> ( "leader",
+			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
 }
 
 void stopDemoCallback (IvyClientPtr app, void *data, int argc, char **argv)
 {
+	// Unsubscribe from end of formation order
 	IvyUnbindMsg( filters.find ( "stop_demo" )->second );
 	filters.erase ( filters.find ("stop_demo" ));
+
+	// Back to normal mode
+	role = NORMAL;
+	// Back to first phase
+	phase = INITIALIZATION;
+
+	// Start again listening to follow request from leaders or to leader promotions
+	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
+			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
+
+	filters.insert( pair<string, MsgRcvPtr> ( "leader",
+			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
+
 	IvySendMsg ("LEAVE_ME_ALONE");
 }
 
