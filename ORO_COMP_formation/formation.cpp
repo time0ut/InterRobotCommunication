@@ -6,6 +6,8 @@
 #include <map>
 #include <sstream>
 
+
+#include "MavDataTypes.h"
 #include "formation.hpp"
 
 // Formation constants :
@@ -33,6 +35,7 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 
+TypeInfosJoystickMavLink pos;
 std::map <string, MsgRcvPtr> filters;
 std::list <PositionLocale> steps;
 std::list <int> followers;
@@ -47,6 +50,7 @@ formation::formation(const std::string& name) :
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
+						op_joystick ( "joystick" ),
 						_phase ( INITIALIZATION ),
 						p_identifier ( 0 ),
 						p_role ( 'N' )
@@ -60,6 +64,7 @@ formation::formation(const std::string& name) :
 
 	// Ports
 	this->addPort( ip_relativePosition ).doc("Local position input");
+	this->addPort( op_joystick ).doc("Output in joystick format for command law");
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
@@ -158,8 +163,27 @@ void formation::updateHook()
 
 					if ( wp.x != this->_relative_position.x || wp.y != this->_relative_position.y )
 					{
-						c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
 
+					/*	typedef struct
+						{
+							//INT8 controlMode;
+							int_least8_t controlMode;
+							//TypeAxes manualControlTc;
+							float roll; ///< roll
+							float pitch; ///< pitch
+							float yaw; ///< yaw
+							float thrust; ///< thrust
+							bool thrust_manual;
+							float h_rate;
+
+						}TypeInfosJoystickMavLink;
+						*/
+						pos.roll = pos.roll - wp.x; // or y??
+						pos.pitch = pos.pitch - wp.y;
+						pos.yaw = pos.yaw - wp.cap;
+
+						op_joystick.write(pos);
+				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
 					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
 					}
 				}

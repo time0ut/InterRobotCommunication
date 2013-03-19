@@ -74,6 +74,7 @@ namespace TTRK {
 
 		// Ports
 		RTT::InputPort<PositionLocale> ip_relativePosition;
+		RTT::OutputPort<TypeInfosJoystickMavLink> op_joystick;
 
 		// Properties
 		int p_identifier; // robot identifier
