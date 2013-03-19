@@ -45,7 +45,7 @@ formation::formation(const std::string& name) :
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
 						_phase ( INITIALIZATION ),
-						p_identifier ( 42 ),
+						p_identifier ( 0 ),
 						p_role ( 'N' )
 
 {
@@ -272,9 +272,11 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     token = strtok_r( args, &delim, &saveptr );
     if (token != NULL) f_id = ::atoi(token);
 
+    IvySendMsg("f_id: %d     id:  %d     role: %c", f_id, id, role);
     // Am I concerned by this message ?
     if ( f_id == id )
     {
+    	IvySendMsg("I'm a follower %d", id)
 		// TODO:  Read fields (delta, start pos) + call command law
 
 		// Now wait for a start notification
@@ -288,6 +290,7 @@ void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 		filters.erase( filters.find("ignore_req") );
 
 		role = FOLLOWER;
+		p_role = 'F';
     }
 }
 

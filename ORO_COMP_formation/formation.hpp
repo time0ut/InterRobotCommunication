@@ -46,9 +46,19 @@ namespace TTRK {
 	class formation : public RTT::TaskContext
 	{
 	public:
-
+		/**
+		 *
+		 */
 		formation(const std::string& name);
+
+		/**
+		 *
+		 */
 		void updateHook();
+
+		/**
+		 *
+		 */
 		bool configureHook();
 
 
