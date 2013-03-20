@@ -446,7 +446,6 @@ void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv
 	// Start again listening to follow request from leaders or to leader promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
-
 	filters.insert( pair<string, MsgRcvPtr> ( "leader",
 			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
 }
@@ -465,7 +464,6 @@ void stopDemoCallback (IvyClientPtr app, void *data, int argc, char **argv)
 	// Start again listening to follow request from leaders or to leader promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
-
 	filters.insert( pair<string, MsgRcvPtr> ( "leader",
 			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
 
