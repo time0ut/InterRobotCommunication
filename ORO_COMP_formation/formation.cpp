@@ -18,6 +18,8 @@
 // The follower own't update its orientation if it is already close from
 // the desired (leader) orientation. The threshold is in degrees.
 #define CAP_TRESHOLD 5
+#define X_TRESHOLD 0.3
+#define Y_TRESHOLD 0.3
 
 
 namespace TTRK {
@@ -71,7 +73,7 @@ formation::formation(const std::string& name) :
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
-						op_joystick ( "joystick" ),
+						op_joystick ( "infosTcMavlink" ),
 //						_phase ( INITIALIZATION ),
 						p_identifier ( 0 )
 
@@ -157,8 +159,8 @@ void formation::updateHook()
 		{
 			if ( ! steps.empty () ) // If there is a next step
 			{
-				PositionLocale wp = (PositionLocale) steps.front ();
-				steps.pop_front();
+					PositionLocale wp = (PositionLocale) steps.front ();
+					steps.pop_front();
 
 //				if ( wp.cap != _relative_position.cap )
 //				{
@@ -176,21 +178,49 @@ void formation::updateHook()
 					while ( c_cmdLawIsRunning () );
 				}
 */
-				// Send command law if necessary
-				if ( 	wp.x != this->_relative_position.x ||
-						wp.y != this->_relative_position.y ||
-						abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
-				{
-						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
-						pos.pitch = (true) ? 0.2 : -0.2;
-						pos.roll = (this->_relative_position.cap < wp.cap) ? 0.2 : -0.2;
+					// Send command law if necessary
+					pos.pitch = 0;
+					pos.roll = 0;
 
-						op_joystick.write(pos);
+					if ( 	abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
+						abs(wp.y - this->_relative_position.y) > Y_TRESHOLD )
+					{
+						pos.pitch = (true) ? 0.05 : -0.05;
+					}
+
+
+					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
+					{
+
+					/*	typedef struct
+						{
+							//INT8 controlMode;
+							int_least8_t controlMode;
+							//TypeAxes manualControlTc;
+							float roll; ///< roll
+							float pitch; ///< pitch
+							float yaw; ///< yaw
+							float thrust; ///< thrust
+							bool thrust_manual;
+							float h_rate;
+						}TypeInfosJoystickMavLink;
+						*/
+						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
+						//pos.pitch = (true) ? 0.05 : -0.05;
+
+						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.05 : 0.05;
+
+
+						//op_joystick.write(pos);
 				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
+					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
+					}
+					IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+					op_joystick.write(pos);
 				}
 			}
 		}
-	}
+
 	// If current role is 'NORMAL', don't do anything
 }
 
