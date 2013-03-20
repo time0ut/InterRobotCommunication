@@ -5,9 +5,10 @@
 #include <rtt/Port.hpp>
 #include <rtt/OperationCaller.hpp>
 #include <list>
-
+#include <timeMeasurement.hpp>
 #include "State.h"
 #include "MavDataTypes.h"
+
 
 namespace TTRK {
 
@@ -15,6 +16,9 @@ namespace TTRK {
 #define VERSION 0.1
 #define DEBUG this->_debugNbPeriods!=0
 #define perforperiodnum 200
+
+int _timeMesNbPeriods; // nb periods for timeMeasurement
+TimeMeasurement 	*_timeMeasurement;
 	/**
 	 * Current role of the robot
 	 *
@@ -72,6 +76,7 @@ namespace TTRK {
 		 * @return true always
 		 */
 		bool configureHook();
+
 
 
 	protected:
@@ -138,6 +143,7 @@ namespace TTRK {
 		 * @see other components.
 		 */
 		int _debugNbPeriods;
+
 
 		// Member data
 		/**

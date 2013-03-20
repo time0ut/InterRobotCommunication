@@ -5,7 +5,7 @@
 
 #include <map>
 #include <sstream>
-
+#include <string>
 #include "formation.hpp"
 
 // Formation constants :
@@ -26,17 +26,17 @@ using namespace std;
 using namespace RTT;
 
 // Declaration of Ivy messages callback functions
-void newWPCallback (IvyClientPtr app, void *data, int argc, char **argv);
-void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv);
-void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void newWPCallback (IvyClientPtr app, void *data, int argc, char **argv);
+		void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv);
+		void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv);
 
 // Desired position sent by the followers to the command law (via output port Formation::op_joystick)
 TypeInfosJoystickMavLink pos;
@@ -63,6 +63,8 @@ MissionPhase phase;
 
 // Number of followers ready to move
 int nb_answers = 0;
+//for network performance evaluation
+uint64_t timeNow;
 
 //constructor
 formation::formation(const std::string& name) :
@@ -89,6 +91,8 @@ formation::formation(const std::string& name) :
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
+	this->addProperty("timeMesNbPeriods",_timeMesNbPeriods).doc("Time measurement results are written to a  file every n activation periods  -- 0 if no measurement");
+	_timeMesNbPeriods=1;
 
 	// Operations
 	this->provides()->addOperation("IvyLoop", &formation::ivyLoop, this);
@@ -107,7 +111,7 @@ void formation::updateHook()
 {
 	static int countdown = REFRESH_PERIOD;
 	static std::ofstream outfile ("roundtripdelay.txt");//for performance evaluation, the file where we store the time of broadcast and reception of messages
-	uint64_t timeNow;
+
 
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
@@ -150,10 +154,10 @@ void formation::updateHook()
 		}
 		else if ( phase == FORMATION )
 		{
-			timeNow = os::TimeService::Instance()->getNSecs()/1000;
-			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
-			IvySendMsg("1 %d %d TEST %lf %lf %lf %lf", seq,followeri,this->_relative_position.x,
-						this->_relative_position.y, 0., this->_relative_position.cap );
+			_timeMeasurement->startPoint();
+			//timeNow = os::TimeService::Instance()->getNSecs()/1000;
+			// Send to ivy bus the TEST message
+			IvySendMsg("TEST %d %d 12345678901234567890", seq,followeri);//?followeri indicate which follower should send the echo
 			seq++;
 			followeri++;
 			if(followeri==followers.end())
@@ -207,6 +211,7 @@ void formation::updateHook()
 
 bool formation::configureHook()
 {
+	_timeMeasurement =new  TimeMeasurement(COMPONENT_NAME,_timeMesNbPeriods);
 	// Start listening to leader and follower promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
@@ -281,6 +286,9 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_yes",
 			IvyBindMsg ( followYesCallback, 0, "^FOLLOW_YES (.*)" )));
+	//for network performance evaluation
+	filters.insert( pair<string, MsgRcvPtr> ( "echo",
+				IvyBindMsg ( echoCallback, 0, "^ECHO (.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
 			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
@@ -323,6 +331,19 @@ void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     if (token != NULL) f_id = ::atoi(token);
 
     candidates.push_back( f_id );
+}
+
+void echoCallback(IvyClientPtr app, void *data, int cargc, char **argv){
+	_timeMeasurement->endpoint();
+	/*char *args;
+	char *seq;
+	char *saveptr;
+	char delim = ' ';
+
+	timeNow = os::TimeService::Instance()->getNSecs()/1000;
+	args = argv[0];
+	seq= strtok_r( args, &delim, &saveptr );
+	time[seq][1]=timeNow;*/
 }
 
 void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
@@ -407,8 +428,8 @@ void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 
 	// Set filters in order to receive control messages and the end of formation
 	// notification
-	filters.insert( pair<string, MsgRcvPtr> ( "control",
-			IvyBindMsg ( newWPCallback, 0, "^CONTROL (.*)" )));
+	filters.insert( pair<string, MsgRcvPtr> ( "test",
+			IvyBindMsg ( testCallback, 0, "^TEST (.*)" )));
 	filters.insert( pair<string, MsgRcvPtr> ( "leave_me_alone",
 			IvyBindMsg ( endOfFormationCallback, 0, "^LEAVE_ME_ALONE$" )));
 }
@@ -439,13 +460,27 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     if (token != NULL) goal.cap = ::atof(token);
     steps.push_back( goal );
 }
+//send the echo when receive the test message
+void testCallback(IvyClientPtr app, void *data, int cargc, char **argv){
+	char *args;
+	char *saveptr;
+	char delim = ' ';
+	char *seq;
+	char *followerid;
+	args = argv[0];
+
+	seq = strtok_r(args, &delim, &saveptr);
+	followerid= strtok_r(NULL, &delim, &saveptr);
+	IvySendMsg("ECHO %s %s 12345678901234567890",seq,followerid);
+
+}
 
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv)
 {
 	// Unsubscribe from control orders or end of mission notification
-	IvyUnbindMsg( filters.find ( "control" )->second );
+	IvyUnbindMsg( filters.find ( "test" )->second );
 	IvyUnbindMsg( filters.find ( "leave_me_alone" )->second );
-	filters.erase ( filters.find ("control" ));
+	filters.erase ( filters.find ("test" ));
 	filters.erase ( filters.find ("leave_me_alone" ));
 
 	// Back to normal mode
