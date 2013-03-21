@@ -141,7 +141,7 @@
 								<option defaultValue="true" id="gnu.c.link.option.shared.40734092" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
 							</tool>
 							<tool command="arm-linux-g++" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.520611560" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
-								<option defaultValue="true" id="gnu.cpp.link.option.shared.746258432" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
+								<option defaultValue="true" id="gnu.cpp.link.option.shared.746258432" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.other.1555240834" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="`pkg-config --libs boost-arm`"/>
 									<listOptionValue builtIn="false" value="`pkg-config --libs orocos-rtt-xenomai-arm`"/>
@@ -150,8 +150,8 @@
 								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
 								<option id="gnu.cpp.link.option.userobjs.1923365589" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
-									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/ivy/libivy.a"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1783797605" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

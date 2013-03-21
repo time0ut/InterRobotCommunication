@@ -162,7 +162,7 @@ void formation::updateHook()
 					PositionLocale wp = (PositionLocale) steps.front ();
 					steps.pop_front();
 
-						if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD){
+					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD){
 
 						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.04 : 0.04;
 
