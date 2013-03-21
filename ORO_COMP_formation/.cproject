@@ -31,7 +31,7 @@
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.release.304890090" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.release"/>
 							<builder buildPath="${workspace_loc:/obstacle-avoidance/Release}" id="cdt.managedbuild.target.gnu.builder.exe.release.1209080217" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1232771657" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-							<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.432508892" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
+							<tool command="g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.432508892" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
 								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.1999799442" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.451963106" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1512758112" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
@@ -39,18 +39,6 @@
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/include"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include/orocos"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/bayes/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/obs/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/mrpt-config"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/hwdrivers/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/base/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/opengl/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/utils/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/vision/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/poses/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/slam/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/gui/include"/>
-									<listOptionValue builtIn="false" value="/usr/include/mrpt/maps/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.2112456526" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="OROCOS_TARGET=gnulinux"/>
@@ -74,18 +62,10 @@
 								<option id="gnu.cpp.link.option.other.1777905495" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other"/>
 								<option id="gnu.cpp.link.option.shared.1704114954" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.paths.1213263069" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths"/>
-								<option id="gnu.cpp.link.option.libs.1393878058" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="mrpt-scanmatching"/>
-									<listOptionValue builtIn="false" value="mrpt-maps"/>
-									<listOptionValue builtIn="false" value="mrpt-obs"/>
-									<listOptionValue builtIn="false" value="mrpt-opengl"/>
-									<listOptionValue builtIn="false" value="mrpt-base"/>
-									<listOptionValue builtIn="false" value="mrpt-vision"/>
-									<listOptionValue builtIn="false" value="mrpt-slam"/>
-									<listOptionValue builtIn="false" value="mrpt-bayes"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.1393878058" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<option id="gnu.cpp.link.option.userobjs.2010086909" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/lib/ivy/libivy.a"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/lib/libpcre.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.166645647" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -138,24 +118,6 @@
 								<option id="gnu.cpp.compiler.option.include.paths.1219505681" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/libs/base/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/detectors/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/hmtslam/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/maps/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/mrpt-config"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/obs/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/reactivenav/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/topography/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/vision/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/scanmatching/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/gui/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/base/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/bayes/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/hwdrivers/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/maps/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/slam/include"/>
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/include/mrpt/opengl/include"/>
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/boost-arm-eabi/include"/>
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/xeno-arm-eabi/usr/xenomai/include"/>
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include"/>
@@ -172,32 +134,23 @@
 								<option id="gnu.c.compiler.option.include.paths.670299108" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
 								</option>
+								<option id="gnu.c.compiler.option.misc.other.1746556095" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -libstdc++" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.844158316" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1943185215" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release">
 								<option defaultValue="true" id="gnu.c.link.option.shared.40734092" name="Shared (-shared)" superClass="gnu.c.link.option.shared" valueType="boolean"/>
 							</tool>
 							<tool command="arm-linux-g++" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.520611560" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
-								<option defaultValue="true" id="gnu.cpp.link.option.shared.746258432" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="true" valueType="boolean"/>
+								<option defaultValue="true" id="gnu.cpp.link.option.shared.746258432" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.other.1555240834" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other" valueType="stringList">
 									<listOptionValue builtIn="false" value="`pkg-config --libs boost-arm`"/>
 									<listOptionValue builtIn="false" value="`pkg-config --libs orocos-rtt-xenomai-arm`"/>
 								</option>
-								<option id="gnu.cpp.link.option.flags.1215862092" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-fPIC" valueType="string"/>
-								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="mrpt-scanmatching"/>
-									<listOptionValue builtIn="false" value="mrpt-maps"/>
-									<listOptionValue builtIn="false" value="mrpt-obs"/>
-									<listOptionValue builtIn="false" value="mrpt-opengl"/>
-									<listOptionValue builtIn="false" value="mrpt-base"/>
-									<listOptionValue builtIn="false" value="mrpt-vision"/>
-									<listOptionValue builtIn="false" value="mrpt-slam"/>
-									<listOptionValue builtIn="false" value="mrpt-bayes"/>
-								</option>
-								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/lib"/>
-								</option>
+								<option id="gnu.cpp.link.option.flags.1215862092" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="" valueType="string"/>
+								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
+								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
 								<option id="gnu.cpp.link.option.userobjs.1923365589" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/ivy/libivy.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1783797605" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
