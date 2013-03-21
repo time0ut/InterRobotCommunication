@@ -73,12 +73,14 @@
 							</tool>
 							<tool command="g++" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1676642366" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
 								<option id="gnu.cpp.link.option.other.1777905495" name="Other options (-Xlinker [option])" superClass="gnu.cpp.link.option.other"/>
-								<option id="gnu.cpp.link.option.shared.1704114954" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="false" valueType="boolean"/>
+								<option id="gnu.cpp.link.option.shared.1704114954" name="Shared (-shared)" superClass="gnu.cpp.link.option.shared" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.link.option.paths.1213263069" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_component_tools/Local}&quot;"/>
+									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/lib"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1393878058" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="mrpt-scanmatching"/>
+									<listOptionValue builtIn="false" value="orocos-rtt-gnulinux"/>
 									<listOptionValue builtIn="false" value="ORO_component_tools_Local"/>
 									<listOptionValue builtIn="false" value="mrpt-maps"/>
 									<listOptionValue builtIn="false" value="mrpt-obs"/>
