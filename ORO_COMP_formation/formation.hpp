@@ -121,6 +121,7 @@ namespace TTRK {
 		 * Relative position read from the output of the SLAM.
 		 */
 		RTT::InputPort<PositionLocale> ip_relativePosition;
+		RTT::InputPort<SystemState> ip_systemState;
 
 		/**
 		 * Joystick format position sent to the command law.
@@ -133,6 +134,11 @@ namespace TTRK {
 		 */
 		int p_identifier;
 
+
+		// TMP debug ; frequency
+		int p_refresh_period;
+
+
 		/**
 		 * For debug
 		 * @see other components.
@@ -144,6 +150,7 @@ namespace TTRK {
 		 * Current local position of the robot.
 		 */
 		PositionLocale _relative_position;
+		SystemState		_system_state;
 //		double _delta_x, _delta_y;
 
 	};

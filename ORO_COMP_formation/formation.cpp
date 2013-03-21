@@ -10,14 +10,14 @@
 
 // Formation constants :
  // Send position every 10 calls to "updateHook"
-#define  REFRESH_PERIOD 100
+#define  REFRESH_PERIOD 10
 
  // Number of followers needed by the leader to pilot the formation
 #define  NB_FOLLOWERS 1		// For now, simulate with just 1 follower
 
 // The follower own't update its orientation if it is already close from
 // the desired (leader) orientation. The threshold is in degrees.
-#define CAP_TRESHOLD 0.15
+#define CAP_TRESHOLD 0.17
 #define X_TRESHOLD 0.3
 #define Y_TRESHOLD 0.3
 
@@ -73,9 +73,11 @@ formation::formation(const std::string& name) :
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
+						ip_systemState ("state"),
 						op_joystick ( "infosTcMavlink" ),
 //						_phase ( INITIALIZATION ),
-						p_identifier ( 0 )
+						p_identifier ( 0 ),
+						p_refresh_period (5)
 
 {
 	cout<<"component "<< COMPONENT_NAME <<" build version:"<< VERSION << "on "<< __DATE__ <<" at "<< __TIME__<<endl;
@@ -86,10 +88,12 @@ formation::formation(const std::string& name) :
 
 	// Ports
 	this->addPort( ip_relativePosition ).doc("Local position input");
+	this->addPort( ip_systemState ).doc("System State input");
 	this->addPort( op_joystick ).doc("Output in joystick format for command law");
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
+	this->addProperty( "refresh_period", this->p_refresh_period ).doc ( "leader refresh period" );
 
 	// Operations
 	this->provides()->addOperation("IvyLoop", &formation::ivyLoop, this);
@@ -110,6 +114,7 @@ void formation::updateHook()
 
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
+	ip_systemState.read ( this->_system_state );
 
 	if ( role == LEADER && countdown -- <= 0 )  // Time to refresh
 	{
@@ -148,10 +153,10 @@ void formation::updateHook()
 		else if ( phase == FORMATION )
 		{
 			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
-			IvySendMsg("CONTROL %lf %lf %lf %lf", this->_relative_position.x,
-						this->_relative_position.y, 0., this->_relative_position.cap );
+			IvySendMsg("CONTROL %.2f %.2f %.2f %.2f", this->_relative_position.x,
+						this->_relative_position.y, 0., this->_system_state.mPsi );//this->_relative_position.cap );
 		}
-		countdown = REFRESH_PERIOD; // Restart timer
+		countdown = p_refresh_period;//REFRESH_PERIOD; // Restart timer
 	}
 	else if ( role == FOLLOWER )
 	{
@@ -162,11 +167,11 @@ void formation::updateHook()
 					PositionLocale wp = (PositionLocale) steps.front ();
 					steps.pop_front();
 
-					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD){
+					if (abs(wp.cap - this->_system_state.mPsi ) > CAP_TRESHOLD*180/3.14){
 
-						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.04 : 0.04;
+						pos.roll = ((this->_system_state.mPsi) < (wp.cap)) ? -0.15 : 0.15;
 
-					IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+					IvySendMsg ( "Heading: from %f to %f; r= %f",this->_relative_position.cap, wp.cap, pos.roll );
 					op_joystick.write(pos);
 					pos.roll = 0;
 				}
@@ -178,6 +183,7 @@ void formation::updateHook()
 							op_joystick.write(pos);
 							pos.pitch = 0;
 						}
+
 			}
 			}
 		}
