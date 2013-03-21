@@ -28,13 +28,13 @@ echo "*** Building PCRE"
 cd pcre-$PCREVER
 chmod +x ./configure
 echo "**** For local"
-./configure --prefix=$PREFIXLOCAL
+./configure --prefix=$PREFIXLOCAL --with-pic
 make
 make install
 make clean
 echo "**** Done"
 echo "**** For gumstix"
-./configure --prefix=$PREFIXGSTIX --host=arm-linux
+./configure --prefix=$PREFIXGSTIX --host=arm-linux --with-pic
 make
 make install
 make clean
