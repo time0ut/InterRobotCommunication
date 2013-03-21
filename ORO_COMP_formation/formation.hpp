@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/OperationCaller.hpp>
 #include <list>
-#include <timeMeasurement.hpp>
+#include <ORO_component_tools/timeMeasurement.hpp>
 #include "State.h"
 #include "MavDataTypes.h"
 

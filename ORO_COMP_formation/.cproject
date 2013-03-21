@@ -41,6 +41,7 @@
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/mrpt/bayes/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/mrpt/obs/include"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication"/>
 									<listOptionValue builtIn="false" value="/usr/include/mrpt/mrpt-config"/>
 									<listOptionValue builtIn="false" value="/usr/include/mrpt/hwdrivers/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/mrpt/base/include"/>
@@ -86,6 +87,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.userobjs.2010086909" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/lib/ivy/libivy.a"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/lib/libpcre.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.166645647" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
