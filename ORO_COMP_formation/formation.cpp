@@ -17,7 +17,9 @@
 
 // The follower own't update its orientation if it is already close from
 // the desired (leader) orientation. The threshold is in degrees.
-#define CAP_TRESHOLD 5
+#define CAP_TRESHOLD 0.15
+#define X_TRESHOLD 0.3
+#define Y_TRESHOLD 0.3
 
 
 namespace TTRK {
@@ -26,19 +28,20 @@ using namespace std;
 using namespace RTT;
 
 // Declaration of Ivy messages callback functions
-void newWPCallback (IvyClientPtr app, void *data, int argc, char **argv);
-void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv);
-void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv);
-
-// Desired position sent by the followers to the command law (via output port Formation::op_joystick)
+		void newWPCallback (IvyClientPtr app, void *data, int argc, char **argv);
+		void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv);
+		void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void followReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void ignoreReqCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void stopDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void inPositionCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void leaderCallback (IvyClientPtr app, void *data, int cargc, char **argv);
+		void echoCallback(IvyClientPtr app, void *data, int cargc, char **argv);
+		void testCallback(IvyClientPtr app, void *data, int cargc, char **argv);
+		// Desired position sent by the followers to the command law (via output port Formation::op_joystick)
 TypeInfosJoystickMavLink pos;
 
 // Ivy filters currently used by the robot (kept up-to-date in real time)
@@ -52,6 +55,7 @@ std::list <int> candidates;
 
 // List of followers
 std::list <int> followers;
+list <int>::const_iterator followeri;
 
 // Robot role
 TypeRobotRole role = NORMAL;
@@ -62,6 +66,8 @@ MissionPhase phase;
 
 // Number of followers ready to move
 int nb_answers = 0;
+//for network performance evaluation
+//uint64_t timeNow;
 
 //constructor
 formation::formation(const std::string& name) :
@@ -71,9 +77,10 @@ formation::formation(const std::string& name) :
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
-						op_joystick ( "joystick" ),
+						op_joystick ( "infosTcMavlink" ),
 //						_phase ( INITIALIZATION ),
-						p_identifier ( 0 )
+						p_identifier ( 0 ),
+						seq(0)
 
 {
 	cout<<"component "<< COMPONENT_NAME <<" build version:"<< VERSION << "on "<< __DATE__ <<" at "<< __TIME__<<endl;
@@ -88,6 +95,8 @@ formation::formation(const std::string& name) :
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
+	this->addProperty("timeMesNbPeriods",_timeMesNbPeriods).doc("Time measurement results are written to a  file every n activation periods  -- 0 if no measurement");
+	_timeMesNbPeriods=1;
 
 	// Operations
 	this->provides()->addOperation("IvyLoop", &formation::ivyLoop, this);
@@ -105,6 +114,8 @@ formation::formation(const std::string& name) :
 void formation::updateHook()
 {
 	static int countdown = REFRESH_PERIOD;
+	//static std::ofstream outfile ("roundtripdelay.txt");//for performance evaluation, the file where we store the time of broadcast and reception of messages
+
 
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
@@ -126,12 +137,13 @@ void formation::updateHook()
 				while ( ! candidates.empty() && msg_sent < NB_FOLLOWERS )
 				{
 					IvySendMsg ( "FOLLOW_ME %d", candidates.front() );
+					followers.push_back(candidates.front());
 					candidates.pop_front();
 					msg_sent ++;
 				}
 				// Once formation has started, the leader can send a cancellation
 				// message to the followers that were not chosen
-				if ( ! candidates.empty() )
+				if ( ! candidates.empty() )//?
 				{
 					while ( ! candidates.empty () )
 					{
@@ -141,13 +153,19 @@ void formation::updateHook()
 				}
 				// Now let's start the second phase
 				phase = FORMATION;
+				followeri=followers.begin();
 			}
 		}
 		else if ( phase == FORMATION )
 		{
-			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
-			IvySendMsg("CONTROL %lf %lf %lf %lf", this->_relative_position.x,
-						this->_relative_position.y, 0., this->_relative_position.cap );
+			_timeMeasurement->startPoint();
+			//timeNow = os::TimeService::Instance()->getNSecs()/1000;
+			// Send to ivy bus the TEST message
+			IvySendMsg("TEST %d %d 12345678901234567890", seq,*followeri);//?followeri indicate which follower should send the echo
+			seq++;
+			followeri++;
+			if(followeri==followers.end())
+				followeri=followers.begin();
 		}
 		countdown = REFRESH_PERIOD; // Restart timer
 	}
@@ -157,8 +175,8 @@ void formation::updateHook()
 		{
 			if ( ! steps.empty () ) // If there is a next step
 			{
-				PositionLocale wp = (PositionLocale) steps.front ();
-				steps.pop_front();
+					PositionLocale wp = (PositionLocale) steps.front ();
+					steps.pop_front();
 
 //				if ( wp.cap != _relative_position.cap )
 //				{
@@ -176,27 +194,56 @@ void formation::updateHook()
 					while ( c_cmdLawIsRunning () );
 				}
 */
-				// Send command law if necessary
-				if ( 	wp.x != this->_relative_position.x ||
-						wp.y != this->_relative_position.y ||
-						abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
-				{
-						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
-						pos.pitch = (true) ? 0.2 : -0.2;
-						pos.roll = (this->_relative_position.cap < wp.cap) ? 0.2 : -0.2;
+					// Send command law if necessary
+					pos.pitch = 0;
+					pos.roll = 0;
 
-						op_joystick.write(pos);
+					if ( 	abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
+						abs(wp.y - this->_relative_position.y) > Y_TRESHOLD )
+					{
+						pos.pitch = (true) ? 0.05 : -0.05;
+					}
+
+
+					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
+					{
+
+					/*	typedef struct
+						{
+							//INT8 controlMode;
+							int_least8_t controlMode;
+							//TypeAxes manualControlTc;
+							float roll; ///< roll
+							float pitch; ///< pitch
+							float yaw; ///< yaw
+							float thrust; ///< thrust
+							bool thrust_manual;
+							float h_rate;
+						}TypeInfosJoystickMavLink;
+						*/
+						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
+						//pos.pitch = (true) ? 0.05 : -0.05;
+
+						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.05 : 0.05;
+
+
+						//op_joystick.write(pos);
 				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
+					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
+					}
+					IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+					op_joystick.write(pos);
 				}
 			}
 		}
-	}
+
 	// If current role is 'NORMAL', don't do anything
 }
 
 
 bool formation::configureHook()
 {
+	_timeMeasurement =new  TimeMeasurement(COMPONENT_NAME,_timeMesNbPeriods);
 	// Start listening to leader and follower promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
@@ -271,6 +318,9 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_yes",
 			IvyBindMsg ( followYesCallback, 0, "^FOLLOW_YES (.*)" )));
+	//for network performance evaluation
+	filters.insert( pair<string, MsgRcvPtr> ( "echo",
+				IvyBindMsg ( echoCallback, 0, "^ECHO (.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
 			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
@@ -313,6 +363,19 @@ void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     if (token != NULL) f_id = ::atoi(token);
 
     candidates.push_back( f_id );
+}
+
+void echoCallback(IvyClientPtr app, void *data, int cargc, char **argv){
+	_timeMeasurement->endpoint();
+	/*char *args;
+	char *seq;
+	char *saveptr;
+	char delim = ' ';
+
+	timeNow = os::TimeService::Instance()->getNSecs()/1000;
+	args = argv[0];
+	seq= strtok_r( args, &delim, &saveptr );
+	time[seq][1]=timeNow;*/
 }
 
 void followMeCallback (IvyClientPtr app, void *data, int cargc, char **argv)
@@ -397,8 +460,8 @@ void gogogoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 
 	// Set filters in order to receive control messages and the end of formation
 	// notification
-	filters.insert( pair<string, MsgRcvPtr> ( "control",
-			IvyBindMsg ( newWPCallback, 0, "^CONTROL (.*)" )));
+	filters.insert( pair<string, MsgRcvPtr> ( "test",
+			IvyBindMsg ( testCallback, 0, "^TEST (.*)" )));
 	filters.insert( pair<string, MsgRcvPtr> ( "leave_me_alone",
 			IvyBindMsg ( endOfFormationCallback, 0, "^LEAVE_ME_ALONE$" )));
 }
@@ -429,13 +492,28 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     if (token != NULL) goal.cap = ::atof(token);
     steps.push_back( goal );
 }
+//send the echo when receive the test message
+void testCallback(IvyClientPtr app, void *data, int cargc, char **argv){
+	char *args;
+	char *saveptr;
+	char delim = ' ';
+	char *seq;
+	char *followerid;
+	args = argv[0];
+
+	seq = strtok_r(args, &delim, &saveptr);
+	followerid= strtok_r(NULL, &delim, &saveptr);
+	if(id==atoi(followerid))
+		IvySendMsg("ECHO %s %s 12345678901234567890",seq,followerid);
+
+}
 
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv)
 {
 	// Unsubscribe from control orders or end of mission notification
-	IvyUnbindMsg( filters.find ( "control" )->second );
+	IvyUnbindMsg( filters.find ( "test" )->second );
 	IvyUnbindMsg( filters.find ( "leave_me_alone" )->second );
-	filters.erase ( filters.find ("control" ));
+	filters.erase ( filters.find ("test" ));
 	filters.erase ( filters.find ("leave_me_alone" ));
 
 	// Back to normal mode

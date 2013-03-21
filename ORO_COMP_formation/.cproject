@@ -87,7 +87,7 @@
 									<listOptionValue builtIn="false" value="mrpt-bayes"/>
 								</option>
 								<option id="gnu.cpp.link.option.userobjs.2010086909" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
-									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/lib/ivy/libivy.a"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/Ivy/local/lib/ivy/libivy.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.166645647" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

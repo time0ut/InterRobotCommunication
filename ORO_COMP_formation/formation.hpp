@@ -9,13 +9,12 @@
 #include "State.h"
 #include "MavDataTypes.h"
 
-
 namespace TTRK {
 
 #define COMPONENT_NAME "formation"
 #define VERSION 0.1
 #define DEBUG this->_debugNbPeriods!=0
-#define perforperiodnum 200
+//#define perforperiodnum 200
 
 int _timeMesNbPeriods; // nb periods for timeMeasurement
 TimeMeasurement 	*_timeMeasurement;
@@ -76,7 +75,6 @@ TimeMeasurement 	*_timeMeasurement;
 		 * @return true always
 		 */
 		bool configureHook();
-
 
 
 	protected:
@@ -152,9 +150,9 @@ TimeMeasurement 	*_timeMeasurement;
 		PositionLocale _relative_position;
 //		double _delta_x, _delta_y;
 		//for network performance evaluation
-		uint64_t time[perforperiodnum][2];
-		int seq=0;//sequence number of the message
-		int echoid=0;
+		//uint64_t time[perforperiodnum][2];
+		int seq;//sequence number of the message
+		//int echoid=0;
 	};
 
 }
