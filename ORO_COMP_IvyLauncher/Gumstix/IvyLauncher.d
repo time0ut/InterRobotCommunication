@@ -1,14 +1,14 @@
-formation.d formation.o: ../formation.cpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Component.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-detail-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/rtt-os-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/rtt-base-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/rtt-internal-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/plugin/rtt-plugin-fwd.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/types/rtt-types-fwd.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/shared_ptr.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/shared_ptr.hpp \
+IvyLauncher.d IvyLauncher.o: ../IvyLauncher.cpp ../IvyLauncher.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/TaskContext.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-config.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/rtt-target.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/xenomai-config.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/../xenomai/xenomai.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationInterface.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/intrusive_ptr.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/intrusive_ptr.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config/user.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config/select_compiler_config.hpp \
@@ -20,12 +20,24 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config/platform/linux.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config/posix_features.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/config/suffix.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/memory.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/assert.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/detail/workaround.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_convertible.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/functional.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/operator_bool.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/Atomic.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/../rtt-config.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/oro_arch.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/../../rtt-config.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-config.h \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/ActionInterface.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/shared_ptr.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/shared_ptr.hpp \
+ /opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/memory.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/checked_delete.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/throw_exception.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/exception/detail/attribute_noreturn.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/detail/workaround.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/exception/exception.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/current_function.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/shared_count.hpp \
@@ -39,33 +51,15 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/spinlock_gcc_arm.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/yield_k.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_counted_impl.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_convertible.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/memory_order.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/operator_bool.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/rtt-target.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/xenomai-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/../xenomai/xenomai.h \
- /home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivy.h \
- /home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivyloop.h \
- /home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivychannel.h \
- ../formation.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/TaskContext.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/intrusive_ptr.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/intrusive_ptr.hpp \
- /opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/functional.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/Atomic.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/../rtt-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/oro_arch.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/../../rtt-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/ActionInterface.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/rtt-base-fwd.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-detail-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/rtt-os-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../base/rtt-base-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../internal/rtt-internal-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../plugin/rtt-plugin-fwd.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../types/rtt-types-fwd.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/DataSource.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../rtt-config.h \
  /opt/arm-eabi/boost-arm-eabi/include/boost/call_traits.hpp \
@@ -469,6 +463,7 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../base/DataSourceBase.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/OutputPortInterface.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-fwd.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/OperationInterfacePartFused.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/function_types/result_type.hpp \
  /opt/arm-eabi/boost-arm-eabi/include/boost/blank.hpp \
@@ -1151,77 +1146,33 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/ExecutionEngine.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/TaskCore.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../Time.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Port.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/InputPort.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/Channels.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ChannelDataElement.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/ChannelElement.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ChannelBufferElement.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferBase.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/InputPortSource.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/Channels.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/PortInterface.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/OperationCallerBase.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/InvokerSignature.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/NA.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OutputPort.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObject.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectLocked.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/MutexLock.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectLockFree.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/DataObjectDataSource.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnFactory.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnInputEndPoint.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnOutputEndPoint.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnID.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/InputPortInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/OutputPortInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../DataFlowInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObject.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectUnSync.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/Buffer.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferLocked.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/Mutex.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/MutexLock.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferInterface.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferLockFree.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/oro_arch.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/../rtt-config.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/oro_gcc/oro_arch.h \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/CAS.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/AtomicMWSRQueue.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/../os/CAS.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/TsPool.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferUnSync.hpp \
- /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp \
- /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h \
- /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Component.hpp
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Component.hpp:
+../IvyLauncher.hpp:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/TaskContext.hpp:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-detail-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-config.h:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/rtt-os-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/rtt-target.h:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/rtt-base-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/xenomai-config.h:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/rtt-internal-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/../xenomai/xenomai.h:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/plugin/rtt-plugin-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/types/rtt-types-fwd.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationInterface.hpp:
 
-/opt/arm-eabi/boost-arm-eabi/include/boost/shared_ptr.hpp:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp:
 
-/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/shared_ptr.hpp:
+/opt/arm-eabi/boost-arm-eabi/include/boost/intrusive_ptr.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/intrusive_ptr.hpp:
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/config.hpp:
 
@@ -1245,17 +1196,41 @@ formation.d formation.o: ../formation.cpp \
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/config/suffix.hpp:
 
-/opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/memory.hpp:
-
 /opt/arm-eabi/boost-arm-eabi/include/boost/assert.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/detail/workaround.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_convertible.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/functional.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/operator_bool.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/Atomic.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/../rtt-config.h:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/oro_arch.h:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/../../rtt-config.h:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-config.h:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/ActionInterface.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/shared_ptr.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/shared_ptr.hpp:
+
+/opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/memory.hpp:
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/checked_delete.hpp:
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/throw_exception.hpp:
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/exception/detail/attribute_noreturn.hpp:
-
-/opt/arm-eabi/boost-arm-eabi/include/boost/detail/workaround.hpp:
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/exception/exception.hpp:
 
@@ -1283,59 +1258,23 @@ formation.d formation.o: ../formation.cpp \
 
 /opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_counted_impl.hpp:
 
-/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/sp_convertible.hpp:
-
 /opt/arm-eabi/boost-arm-eabi/include/boost/memory_order.hpp:
-
-/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/detail/operator_bool.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/rtt-target.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/xenomai-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/targets/../xenomai/xenomai.h:
-
-/home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivy.h:
-
-/home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivyloop.h:
-
-/home/dmia/InterRobotCommunication/gumstix/include/Ivy/ivychannel.h:
-
-../formation.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/TaskContext.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp:
-
-/opt/arm-eabi/boost-arm-eabi/include/boost/intrusive_ptr.hpp:
-
-/opt/arm-eabi/boost-arm-eabi/include/boost/smart_ptr/intrusive_ptr.hpp:
-
-/opt/arm-eabi/boost-arm-eabi/include/boost/config/no_tr1/functional.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/Atomic.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/../rtt-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/oro_arch.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_gcc/../../rtt-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/ActionInterface.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/rtt-base-fwd.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../rtt-detail-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/rtt-os-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../base/rtt-base-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../internal/rtt-internal-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../plugin/rtt-plugin-fwd.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../types/rtt-types-fwd.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/DataSource.hpp:
 
@@ -2142,6 +2081,8 @@ formation.d formation.o: ../formation.cpp \
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/OutputPortInterface.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataSourceBase.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/rtt-fwd.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/OperationInterfacePartFused.hpp:
 
@@ -3507,30 +3448,6 @@ formation.d formation.o: ../formation.cpp \
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../Time.hpp:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Port.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/InputPort.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/Channels.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ChannelDataElement.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/ChannelElement.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ChannelBufferElement.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferBase.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/InputPortSource.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/Channels.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/PortInterface.hpp:
-
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/OperationCallerBase.hpp:
@@ -3539,72 +3456,4 @@ formation.d formation.o: ../formation.cpp \
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/NA.hpp:
 
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OutputPort.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObject.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectLocked.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/MutexLock.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/DataObjectLockFree.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/base/../os/oro_arch.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/DataObjectDataSource.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnFactory.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnInputEndPoint.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnOutputEndPoint.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/ConnID.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/InputPortInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/OutputPortInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../DataFlowInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObject.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectUnSync.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/DataObjectInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/Buffer.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferLocked.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/Mutex.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/MutexLock.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferInterface.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferLockFree.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/oro_arch.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/../rtt-config.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/oro_gcc/oro_arch.h:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../os/CAS.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/AtomicMWSRQueue.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/../os/CAS.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/TsPool.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferUnSync.hpp:
-
-/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp:
-
-/home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h:
-
-/home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h:
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Component.hpp:

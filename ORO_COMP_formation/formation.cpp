@@ -17,7 +17,7 @@
 
 // The follower own't update its orientation if it is already close from
 // the desired (leader) orientation. The threshold is in degrees.
-#define CAP_TRESHOLD 5
+#define CAP_TRESHOLD 0.15
 #define X_TRESHOLD 0.3
 #define Y_TRESHOLD 0.3
 
@@ -162,62 +162,23 @@ void formation::updateHook()
 					PositionLocale wp = (PositionLocale) steps.front ();
 					steps.pop_front();
 
-//				if ( wp.cap != _relative_position.cap )
-//				{
-//					c_cmdLawRotate ( wp.cap );
-//
-//					// Wait for movement to be executed:
-//					while ( c_cmdLawIsRunning () );
-//				}
-/*
-				if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
-				{
-					c_cmdLawRotate ( wp.cap );
+						if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD){
 
-					// Wait for movement to be executed:
-					while ( c_cmdLawIsRunning () );
-				}
-*/
-					// Send command law if necessary
-					pos.pitch = 0;
-					pos.roll = 0;
+						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.04 : 0.04;
 
-					if ( 	abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
-						abs(wp.y - this->_relative_position.y) > Y_TRESHOLD )
-					{
-						pos.pitch = (true) ? 0.05 : -0.05;
-					}
-
-
-					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
-					{
-
-					/*	typedef struct
-						{
-							//INT8 controlMode;
-							int_least8_t controlMode;
-							//TypeAxes manualControlTc;
-							float roll; ///< roll
-							float pitch; ///< pitch
-							float yaw; ///< yaw
-							float thrust; ///< thrust
-							bool thrust_manual;
-							float h_rate;
-						}TypeInfosJoystickMavLink;
-						*/
-						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
-						//pos.pitch = (true) ? 0.05 : -0.05;
-
-						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.05 : 0.05;
-
-
-						//op_joystick.write(pos);
-				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
-					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
-					}
 					IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
 					op_joystick.write(pos);
+					pos.roll = 0;
 				}
+						else if(abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
+             					abs(wp.y - this->_relative_position.y) > Y_TRESHOLD){
+
+							pos.pitch = 0.05;
+							IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+							op_joystick.write(pos);
+							pos.pitch = 0;
+						}
+			}
 			}
 		}
 
@@ -232,7 +193,7 @@ bool formation::configureHook()
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "leader",
-			IvyBindMsg ( followReqCallback, 0, "^LEADER (.*)" )));
+			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
 
 	// Retrieve robot ID
 	id = p_identifier;
