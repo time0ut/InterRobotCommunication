@@ -113,6 +113,7 @@ formation::formation(const std::string& name) :
 
 	// TMP debug
 	this->init();
+	_timeMeasurement->startPoint();
 }
 
 void formation::updateHook()
@@ -163,7 +164,7 @@ void formation::updateHook()
 		}
 		else if ( phase == FORMATION )
 		{
-			_timeMeasurement->startPoint();
+			//_timeMeasurement->startPoint();
 			//timeNow = os::TimeService::Instance()->getNSecs()/1000;
 			// Send to ivy bus the TEST message
 			IvySendMsg("TEST %d %d 12345678901234567890", seq,*followeri);//?followeri indicate which follower should send the echo
@@ -286,8 +287,8 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_yes",
 			IvyBindMsg ( followYesCallback, 0, "^FOLLOW_YES (.*)" )));
 	//for network performance evaluation
-	filters.insert( pair<string, MsgRcvPtr> ( "echo",
-				IvyBindMsg ( echoCallback, 0, "^ECHO (.*)" )));
+	//filters.insert( pair<string, MsgRcvPtr> ( "echo",
+	//			IvyBindMsg ( echoCallback, 0, "^ECHO (.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
 			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
@@ -333,7 +334,7 @@ void followYesCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 }
 
 void echoCallback(IvyClientPtr app, void *data, int cargc, char **argv){
-	_timeMeasurement->endpoint();
+	//_timeMeasurement->endpoint();
 	/*char *args;
 	char *seq;
 	char *saveptr;
@@ -467,11 +468,13 @@ void testCallback(IvyClientPtr app, void *data, int cargc, char **argv){
 	char *seq;
 	char *followerid;
 	args = argv[0];
-
-	seq = strtok_r(args, &delim, &saveptr);
-	followerid= strtok_r(NULL, &delim, &saveptr);
-	if(id==atoi(followerid))
-		IvySendMsg("ECHO %s %s 12345678901234567890",seq,followerid);
+	_timeMeasurement->endpoint();
+	_timeMeasurement->startPoint();
+	//_timeMeasurement->endPoint();
+//	seq = strtok_r(args, &delim, &saveptr);
+//	followerid= strtok_r(NULL, &delim, &saveptr);
+//	if(id==atoi(followerid))
+//		IvySendMsg("ECHO %s %s 12345678901234567890",seq,followerid);
 
 }
 

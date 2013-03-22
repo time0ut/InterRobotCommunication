@@ -17,7 +17,7 @@ CPP_DEPS += \
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -DOROCOS_TARGET=gnulinux -DOCL_DLL_EXPORT -I"/home/dmia/workspace/ORO_TYPE_base-types" -I/home/dmia/InterRobotCommunication/local/include -I/opt/orocos-toolchain/install/include/orocos -I/opt/orocos-toolchain/install/include -I"/home/dmia/workspace/ORO_component_tools" -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	g++ -DOROCOS_TARGET=gnulinux -DOCL_DLL_EXPORT -I"/home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types" -I/home/dmia/InterRobotCommunication/local/include -I/opt/orocos-toolchain/install/include/orocos -I/opt/orocos-toolchain/install/include -I"/home/dmia/workspace/workspaceEclipse/ORO_component_tools" -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

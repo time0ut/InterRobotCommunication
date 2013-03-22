@@ -124,6 +124,9 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1219505681" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/boost-arm-eabi/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/xeno-arm-eabi/usr/xenomai/include"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/include"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include/orocos"/>
 									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include"/>
@@ -140,7 +143,7 @@
 								<option id="gnu.c.compiler.option.include.paths.670299108" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
 								</option>
-								<option id="gnu.c.compiler.option.misc.other.1328525603" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -libstdc++" valueType="string"/>
+								<option id="gnu.c.compiler.option.misc.other.1328525603" name="Other flags" superClass="gnu.c.compiler.option.misc.other" value="-c -fmessage-length=0 -libstdc++" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.844158316" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1943185215" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release">
@@ -153,15 +156,13 @@
 									<listOptionValue builtIn="false" value="`pkg-config --libs orocos-rtt-xenomai-arm`"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1215862092" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="" valueType="string"/>
-								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
-									<listOptionValue builtIn="false" value="orocos-rtt-gnulinux"/>
-									<listOptionValue builtIn="false" value="ORO_component_tools_Local"/>
-								</option>
+								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
 								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/mrpt-arm-eabi/lib"/>
 								</option>
 								<option id="gnu.cpp.link.option.userobjs.1923365589" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/ivy/libivy.a"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1783797605" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

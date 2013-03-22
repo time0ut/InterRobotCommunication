@@ -43,7 +43,7 @@ all: libORO_COMP_formation_Local.so
 libORO_COMP_formation_Local.so: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L"/home/dmia/workspace/ORO_component_tools/Local" -L/opt/orocos-toolchain/install/lib -shared -o "libORO_COMP_formation_Local.so" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/opt/orocos-toolchain/install/lib -shared -o "libORO_COMP_formation_Local.so" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -43,7 +43,7 @@ all: libORO_COMP_formation_Gumstix.so
 libORO_COMP_formation_Gumstix.so: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	arm-linux-g++ -L/opt/arm-eabi/mrpt-arm-eabi/lib -fPIC -Xlinker `pkg-config --libs boost-arm` -Xlinker `pkg-config --libs orocos-rtt-xenomai-arm` -shared -o "libORO_COMP_formation_Gumstix.so" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-linux-g++ -L/opt/arm-eabi/mrpt-arm-eabi/lib -Xlinker `pkg-config --libs boost-arm` -Xlinker `pkg-config --libs orocos-rtt-xenomai-arm` -shared -o "libORO_COMP_formation_Gumstix.so" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
