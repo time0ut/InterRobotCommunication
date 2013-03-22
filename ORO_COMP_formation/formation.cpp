@@ -481,6 +481,7 @@ void testCallback(IvyClientPtr app, void *data, int cargc, char **argv){
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv)
 {
 	// Unsubscribe from control orders or end of mission notification
+	_timeMeasurement->endpoint();
 	IvyUnbindMsg( filters.find ( "test" )->second );
 	IvyUnbindMsg( filters.find ( "leave_me_alone" )->second );
 	filters.erase ( filters.find ("test" ));
