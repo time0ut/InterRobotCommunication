@@ -77,9 +77,11 @@ formation::formation(const std::string& name) :
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
 						ip_relativePosition ( "position_local" ),
+						ip_systemState ("state"),
 						op_joystick ( "infosTcMavlink" ),
 //						_phase ( INITIALIZATION ),
 						p_identifier ( 0 ),
+						p_refresh_period (5),
 						seq(0)
 
 {
@@ -91,10 +93,12 @@ formation::formation(const std::string& name) :
 
 	// Ports
 	this->addPort( ip_relativePosition ).doc("Local position input");
+	this->addPort( ip_systemState ).doc("System State input");
 	this->addPort( op_joystick ).doc("Output in joystick format for command law");
 
 	// Properties
 	this->addProperty( "identifier", this->p_identifier ).doc ( "robot identifier" );
+	this->addProperty( "refresh_period", this->p_refresh_period ).doc ( "leader refresh period" );
 	this->addProperty("timeMesNbPeriods",_timeMesNbPeriods).doc("Time measurement results are written to a  file every n activation periods  -- 0 if no measurement");
 	_timeMesNbPeriods=1;
 
@@ -119,6 +123,7 @@ void formation::updateHook()
 
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
+	ip_systemState.read ( this->_system_state );
 
 	if ( role == LEADER && countdown -- <= 0 )  // Time to refresh
 	{
@@ -143,7 +148,7 @@ void formation::updateHook()
 				}
 				// Once formation has started, the leader can send a cancellation
 				// message to the followers that were not chosen
-				if ( ! candidates.empty() )//?
+				if ( ! candidates.empty() )
 				{
 					while ( ! candidates.empty () )
 					{
@@ -167,7 +172,7 @@ void formation::updateHook()
 			if(followeri==followers.end())
 				followeri=followers.begin();
 		}
-		countdown = REFRESH_PERIOD; // Restart timer
+		countdown = p_refresh_period;//REFRESH_PERIOD; // Restart timer
 	}
 	else if ( role == FOLLOWER )
 	{
@@ -178,62 +183,24 @@ void formation::updateHook()
 					PositionLocale wp = (PositionLocale) steps.front ();
 					steps.pop_front();
 
-//				if ( wp.cap != _relative_position.cap )
-//				{
-//					c_cmdLawRotate ( wp.cap );
-//
-//					// Wait for movement to be executed:
-//					while ( c_cmdLawIsRunning () );
-//				}
-/*
-				if ( abs(wp.cap - _relative_position.cap) > CAP_TRESHOLD )
-				{
-					c_cmdLawRotate ( wp.cap );
+					if (abs(wp.cap - this->_system_state.mPsi ) > CAP_TRESHOLD*180/3.14){
 
-					// Wait for movement to be executed:
-					while ( c_cmdLawIsRunning () );
-				}
-*/
-					// Send command law if necessary
-					pos.pitch = 0;
-					pos.roll = 0;
+						pos.roll = ((this->_system_state.mPsi) < (wp.cap)) ? -0.15 : 0.15;
 
-					if ( 	abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
-						abs(wp.y - this->_relative_position.y) > Y_TRESHOLD )
-					{
-						pos.pitch = (true) ? 0.05 : -0.05;
-					}
-
-
-					if (abs(wp.cap - this->_relative_position.cap) > CAP_TRESHOLD  )
-					{
-
-					/*	typedef struct
-						{
-							//INT8 controlMode;
-							int_least8_t controlMode;
-							//TypeAxes manualControlTc;
-							float roll; ///< roll
-							float pitch; ///< pitch
-							float yaw; ///< yaw
-							float thrust; ///< thrust
-							bool thrust_manual;
-							float h_rate;
-						}TypeInfosJoystickMavLink;
-						*/
-						//pos.roll = (this->_relative_position.x < wp.x) ? 0.2 : -0.2; // or y??
-						//pos.pitch = (true) ? 0.05 : -0.05;
-
-						pos.roll = ((this->_relative_position.cap) < (wp.cap)) ? -0.05 : 0.05;
-
-
-						//op_joystick.write(pos);
-				//		c_cmdLawMoveTo ( double (wp.x + _delta_x), double (wp.y + _delta_y), 'L');
-					//	IvySendMsg ("Pos: %lf  %lf", this->_relative_position.x, this->_relative_position.y );
-					}
-					IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+					IvySendMsg ( "Heading: from %f to %f; r= %f",this->_relative_position.cap, wp.cap, pos.roll );
 					op_joystick.write(pos);
+					pos.roll = 0;
 				}
+						else if(abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
+             					abs(wp.y - this->_relative_position.y) > Y_TRESHOLD){
+
+							pos.pitch = 0.05;
+							IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
+							op_joystick.write(pos);
+							pos.pitch = 0;
+						}
+
+			}
 			}
 		}
 
@@ -249,7 +216,7 @@ bool formation::configureHook()
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
 
 	filters.insert( pair<string, MsgRcvPtr> ( "leader",
-			IvyBindMsg ( followReqCallback, 0, "^LEADER (.*)" )));
+			IvyBindMsg ( leaderCallback, 0, "^LEADER (.*)" )));
 
 	// Retrieve robot ID
 	id = p_identifier;

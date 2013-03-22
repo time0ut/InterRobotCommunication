@@ -125,6 +125,7 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Relative position read from the output of the SLAM.
 		 */
 		RTT::InputPort<PositionLocale> ip_relativePosition;
+		RTT::InputPort<SystemState> ip_systemState;
 
 		/**
 		 * Joystick format position sent to the command law.
@@ -136,6 +137,11 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Robot ID number. This has to be set in the deployer file.
 		 */
 		int p_identifier;
+
+
+		// TMP debug ; frequency
+		int p_refresh_period;
+
 
 		/**
 		 * For debug
@@ -149,6 +155,7 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Current local position of the robot.
 		 */
 		PositionLocale _relative_position;
+		SystemState		_system_state;
 //		double _delta_x, _delta_y;
 		//for network performance evaluation
 		//uint64_t time[perforperiodnum][2];
