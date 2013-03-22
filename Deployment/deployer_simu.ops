@@ -119,9 +119,7 @@ camera.namePortMorse = "/port_camera_local3"
 print.ln("")
 
 print.ln("=== Configuration formation ===")
-formation.identifier = 10
-# L = LEADER
-formation.role = 'L'
+formation.identifier = 42
 print.ln("")
 
 print.ln("=== Etape de configuration ===")
