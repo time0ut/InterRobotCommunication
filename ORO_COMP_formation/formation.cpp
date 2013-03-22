@@ -113,7 +113,6 @@ formation::formation(const std::string& name) :
 
 	// TMP debug
 	this->init();
-	_timeMeasurement->startPoint();
 }
 
 void formation::updateHook()
@@ -160,6 +159,8 @@ void formation::updateHook()
 				// Now let's start the second phase
 				phase = FORMATION;
 				followeri=followers.begin();
+				_timeMeasurement->startPoint();
+
 			}
 		}
 		else if ( phase == FORMATION )
