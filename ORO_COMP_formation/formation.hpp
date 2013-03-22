@@ -8,6 +8,7 @@
 
 #include "State.h"
 #include "MavDataTypes.h"
+#include "CICAS_UGV.h"
 
 namespace TTRK {
 
@@ -116,6 +117,8 @@ namespace TTRK {
 		 */
 		RTT::OperationCaller<bool() > c_cmdLawIsRunning;
 
+		RTT::OperationCaller< int (CICAS_UGV_TC*) > c_sendCommandToCICAS;
+
 		// Ports
 		/**
 		 * Relative position read from the output of the SLAM.
@@ -127,6 +130,11 @@ namespace TTRK {
 		 * Joystick format position sent to the command law.
 		 */
 		RTT::OutputPort<TypeInfosJoystickMavLink> op_joystick;
+
+		/**
+		 * TODO
+		 */
+		RTT::InputPort<CICAS_UGV_TC> ip_cicas_tc;
 
 		// Properties
 		/**
@@ -150,6 +158,7 @@ namespace TTRK {
 		 * Current local position of the robot.
 		 */
 		PositionLocale _relative_position;
+		CICAS_UGV_TC	_cicas_tc;
 		SystemState		_system_state;
 //		double _delta_x, _delta_y;
 

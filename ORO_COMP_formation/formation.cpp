@@ -5,6 +5,7 @@
 
 #include <map>
 #include <sstream>
+#include <string>
 
 #include "formation.hpp"
 
@@ -47,7 +48,9 @@ TypeInfosJoystickMavLink pos;
 std::map <string, MsgRcvPtr> filters;
 
 // List of successive positions the follower has to reach to follow the leader
-std::list <PositionLocale> steps;
+//std::list <PositionLocale> steps;
+
+std::list <CICAS_UGV_TC> steps;
 
 // List of candidates to enter the formation as followers
 std::list <int> candidates;
@@ -65,6 +68,9 @@ MissionPhase phase;
 // Number of followers ready to move
 int nb_answers = 0;
 
+
+CICAS_UGV_TC wp;
+
 //constructor
 formation::formation(const std::string& name) :
 						TaskContext (name, PreOperational),
@@ -72,8 +78,10 @@ formation::formation(const std::string& name) :
 						c_cmdLawMoveTo ( "MoveTo" ),
 						c_cmdLawRotate ( "Rotate" ),
 						c_cmdLawIsRunning ( "IsCommandRunning" ),
+						c_sendCommandToCICAS("sendCommand"),
 						ip_relativePosition ( "position_local" ),
 						ip_systemState ("state"),
+						ip_cicas_tc ("cicasTC"),
 						op_joystick ( "infosTcMavlink" ),
 //						_phase ( INITIALIZATION ),
 						p_identifier ( 0 ),
@@ -89,6 +97,7 @@ formation::formation(const std::string& name) :
 	// Ports
 	this->addPort( ip_relativePosition ).doc("Local position input");
 	this->addPort( ip_systemState ).doc("System State input");
+	this->addPort( ip_cicas_tc ).doc("CICAS TC coming from command law");
 	this->addPort( op_joystick ).doc("Output in joystick format for command law");
 
 	// Properties
@@ -103,6 +112,7 @@ formation::formation(const std::string& name) :
 	this->requires()->addOperationCaller(this->c_cmdLawMoveTo);
 	this->requires()->addOperationCaller(this->c_cmdLawRotate);
 	this->requires()->addOperationCaller(this->c_cmdLawIsRunning);
+	this->requires("ttrk")->addOperationCaller(this->c_sendCommandToCICAS);
 
 	// TMP debug
 	this->init();
@@ -115,6 +125,7 @@ void formation::updateHook()
 	// Update relative position
 	ip_relativePosition.read( this->_relative_position );
 	ip_systemState.read ( this->_system_state );
+	ip_cicas_tc.read ( this->_cicas_tc );
 
 	if ( role == LEADER && countdown -- <= 0 )  // Time to refresh
 	{
@@ -153,40 +164,46 @@ void formation::updateHook()
 		else if ( phase == FORMATION )
 		{
 			// Send to ivy bus _longitude & _latitude & orientation (no altitude for now)
-			IvySendMsg("CONTROL %.2f %.2f %.2f %.2f", this->_relative_position.x,
-						this->_relative_position.y, 0., this->_system_state.mPsi );//this->_relative_position.cap );
+		//	IvySendMsg("CONTROL %.2f %.2f %.2f %.2f", this->_relative_position.x,
+		//				this->_relative_position.y, 0., this->_system_state.mPsi );//this->_relative_position.cap );
+
+			string cicasArgs = "NNCONTROL";
+			for (int i = 0; i < NB_TC_CICAS_UGV; i++ )
+			{
+				cicasArgs += (" " + this->_cicas_tc.commands[i] );
+			}
+		//	IvySendMsg ( cicasArgs.c_str() );
+			IvySendMsg("CONTROL %d %d %d %d %d %d %d %d %d", _cicas_tc.commands[0], _cicas_tc.commands[1], _cicas_tc.commands[2], _cicas_tc.commands[3],
+					_cicas_tc.commands[4], _cicas_tc.commands[5], _cicas_tc.commands[6], _cicas_tc.commands[7], _cicas_tc.commands[8]);
+
 		}
 		countdown = p_refresh_period;//REFRESH_PERIOD; // Restart timer
 	}
 	else if ( role == FOLLOWER )
 	{
-		if ( ! c_cmdLawIsRunning () ) // If the robot stopped moving
+		if ( ! c_sendCommandToCICAS.ready () ) // If the robot stopped moving
 		{
 			if ( ! steps.empty () ) // If there is a next step
 			{
-					PositionLocale wp = (PositionLocale) steps.front ();
-					steps.pop_front();
-
-					if (abs(wp.cap - this->_system_state.mPsi ) > CAP_TRESHOLD*180/3.14){
-
-						pos.roll = ((this->_system_state.mPsi) < (wp.cap)) ? -0.15 : 0.15;
-
-					IvySendMsg ( "Heading: from %f to %f; r= %f",this->_relative_position.cap, wp.cap, pos.roll );
-					op_joystick.write(pos);
-					pos.roll = 0;
-				}
-						else if(abs(wp.x - this->_relative_position.x) > X_TRESHOLD ||
-             					abs(wp.y - this->_relative_position.y) > Y_TRESHOLD){
-
-							pos.pitch = 0.05;
-							IvySendMsg ( "I want to move: pitch= %f, roll= %f", pos.pitch, pos.roll );
-							op_joystick.write(pos);
-							pos.pitch = 0;
-						}
-
-			}
+			//		IvySendMsg("New step");
+					wp = (CICAS_UGV_TC) steps.front ();
+					// call CICAS service
+					if ( this->c_sendCommandToCICAS( &wp ) <= 0 )
+					{	// We'll try again at next updateHook. Ivy debug msg.
+					//	IvySendMsg ("Unable to send command to cicas");
+					}
+					else // If everything is ok, delete current step to execute the next one
+					{
+						steps.pop_front();
+						IvySendMsg("OK");
+					}
 			}
 		}
+		else
+		{
+		//	IvySendMsg("Unavailable CICAS");
+		}
+	}
 
 	// If current role is 'NORMAL', don't do anything
 }
@@ -411,20 +428,20 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	char *token;
     char *saveptr;
     char delim = ' ';
-    PositionLocale goal;
+ //   PositionLocale goal;
+    CICAS_UGV_TC tc;
 
     args = argv[0];
 
-    token = strtok_r(args, &delim, &saveptr);
-    if (token != NULL) goal.x = ::atof(token);
-    token = strtok_r(NULL, &delim, &saveptr);
-    if (token != NULL) goal.y = ::atof(token);
-    token = strtok_r(NULL, &delim, &saveptr);
-    // For now, just ignore altitude...
-    //if (token != NULL) XXX = ::atof(token);
-    token = strtok_r(NULL, &delim, &saveptr);
-    if (token != NULL) goal.cap = ::atof(token);
-    steps.push_back( goal );
+    for ( int i = 0; i < NB_TC_CICAS_UGV; i ++ )
+    {
+    	token = strtok_r(args, &delim, &saveptr);
+    	if (token != NULL) tc.commands[i] = ::atoi(token);
+    	args = NULL;
+    }
+    steps.push_back( tc );
+	IvySendMsg("FOLLOWER: 40 -40 %d %d %d %d %d %d %d", /*tc.commands[0], tc.commands[1],*/ tc.commands[2], tc.commands[3],
+			tc.commands[4], tc.commands[5], tc.commands[6], tc.commands[7], tc.commands[8]);
 }
 
 void endOfFormationCallback (IvyClientPtr app, void *data, int argc, char **argv)

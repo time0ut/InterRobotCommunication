@@ -1201,7 +1201,8 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferUnSync.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp \
  /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h \
- /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h
+ /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h \
+ /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/CICAS_UGV.h
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Component.hpp:
 
@@ -3608,3 +3609,5 @@ formation.d formation.o: ../formation.cpp \
 /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h:
 
 /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h:
+
+/home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/CICAS_UGV.h:
