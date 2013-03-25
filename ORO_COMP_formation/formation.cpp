@@ -5,7 +5,6 @@
 
 #include <map>
 #include <sstream>
-#include <string>
 
 #include "formation.hpp"
 
@@ -14,7 +13,7 @@
 #define  REFRESH_PERIOD 10
 
 // Number of messages to send for roundtrip test
-#define  NB_TEST_MESSAGES 200
+#define  NB_TEST_MESSAGES 999999999999
 
  // Number of followers needed by the leader to pilot the formation
 #define  NB_FOLLOWERS 1		// For now, simulate with just 1 follower
@@ -114,6 +113,7 @@ formation::formation(const std::string& name) :
 	// Operations
 	this->provides()->addOperation("IvyLoop", &formation::ivyLoop, this);
 	this->provides()->addOperation("bye", &formation::bye, this);
+	this->provides()->addOperation("IvySend", &formation::ivySendMsg, this);
 
 	// Service requester
 	this->requires()->addOperationCaller(this->c_cmdLawMoveTo);
@@ -275,6 +275,11 @@ bool formation::bye(){
 	return true;
 }
 
+void formation::ivySendMsg( ::string msg )
+{
+	IvySendMsg("%s", msg.c_str());
+}
+
 /******************************************************************************/
 /************************ INITIALIZATION PHASE CALLBACKS **********************/
 /******************************************************************************/
@@ -332,6 +337,7 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 void doTestCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
 	// Desactivate do demo request
+
 	IvyUnbindMsg( filters.find ( "do_test" )->second );
 	filters.erase( filters.find("do_test") );
 

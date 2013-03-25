@@ -5,10 +5,12 @@
 #include <rtt/Port.hpp>
 #include <rtt/OperationCaller.hpp>
 #include <list>
+#include <string>
 #include "timeMeasurement.hpp"
 #include "State.h"
 #include "MavDataTypes.h"
 #include "CICAS_UGV.h"
+
 
 namespace TTRK {
 
@@ -89,7 +91,7 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Formation component stop function.
 		 *
 		 * This function has to be called when the component isn't needed anymore.
-		 * It closes the connexion to the Ivy bus.
+		 * It closes the connection to the Ivy bus.
 		 */
 		bool bye();
 
@@ -99,6 +101,11 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Contains an infinite loop (doesn't return).
 		 */
 		void ivyLoop();
+
+		/**
+			 * Call this to send a message through the Ivy bus.
+			 */
+		void ivySendMsg( ::string msg );
 
 
 		/**
