@@ -5,7 +5,7 @@
 #include <rtt/Port.hpp>
 #include <rtt/OperationCaller.hpp>
 #include <list>
-
+#include "timeMeasurement.hpp"
 #include "State.h"
 #include "MavDataTypes.h"
 #include "CICAS_UGV.h"
@@ -16,6 +16,7 @@ namespace TTRK {
 #define VERSION 0.1
 #define DEBUG this->_debugNbPeriods!=0
 
+TimeMeasurement 	*_timeMeasurement;
 	/**
 	 * Current role of the robot
 	 *

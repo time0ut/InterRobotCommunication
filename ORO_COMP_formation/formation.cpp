@@ -57,6 +57,7 @@ std::list <int> candidates;
 
 // List of followers
 std::list <int> followers;
+list <int>::const_iterator followeri;
 
 // Robot role
 TypeRobotRole role = NORMAL;
@@ -144,6 +145,7 @@ void formation::updateHook()
 				while ( ! candidates.empty() && msg_sent < NB_FOLLOWERS )
 				{
 					IvySendMsg ( "FOLLOW_ME %d", candidates.front() );
+					followers.push_back(candidates.front());
 					candidates.pop_front();
 					msg_sent ++;
 				}
@@ -159,6 +161,9 @@ void formation::updateHook()
 				}
 				// Now let's start the second phase
 				phase = FORMATION;
+				followeri=followers.begin();
+				//_timeMeasurement->startPoint();
+
 			}
 		}
 		else if ( phase == FORMATION )
@@ -175,7 +180,8 @@ void formation::updateHook()
 		//	IvySendMsg ( cicasArgs.c_str() );
 			IvySendMsg("CONTROL %d %d %d %d %d %d %d %d %d", _cicas_tc.commands[0], _cicas_tc.commands[1], _cicas_tc.commands[2], _cicas_tc.commands[3],
 					_cicas_tc.commands[4], _cicas_tc.commands[5], _cicas_tc.commands[6], _cicas_tc.commands[7], _cicas_tc.commands[8]);
-
+		if(followeri==followers.end())
+				followeri=followers.begin();
 		}
 		countdown = p_refresh_period;//REFRESH_PERIOD; // Restart timer
 	}
@@ -211,6 +217,7 @@ void formation::updateHook()
 
 bool formation::configureHook()
 {
+	_timeMeasurement =new  TimeMeasurement(COMPONENT_NAME,_timeMesNbPeriods);
 	// Start listening to leader and follower promotions
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_req",
 			IvyBindMsg ( followReqCallback, 0, "^FOLLOW_REQ(.*)" )));
@@ -432,6 +439,9 @@ void newWPCallback (IvyClientPtr app, void *data, int cargc, char **argv)
     CICAS_UGV_TC tc;
 
     args = argv[0];
+
+	_timeMeasurement->endpoint();
+	_timeMeasurement->startPoint();
 
     for ( int i = 0; i < NB_TC_CICAS_UGV; i ++ )
     {
