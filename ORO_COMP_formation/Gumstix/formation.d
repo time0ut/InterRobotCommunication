@@ -1200,6 +1200,10 @@ formation.d formation.o: ../formation.cpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/../internal/TsPool.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferUnSync.hpp \
  /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp \
+ /home/dmia/workspace/workspaceEclipse/ORO_component_tools/timeMeasurement.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Property.hpp \
+ /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/TimeService.hpp \
  /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h \
  /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/MavDataTypes.h \
  /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/CICAS_UGV.h
@@ -3605,6 +3609,14 @@ formation.d formation.o: ../formation.cpp \
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/internal/../base/BufferUnSync.hpp:
 
 /opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/OperationCaller.hpp:
+
+/home/dmia/workspace/workspaceEclipse/ORO_component_tools/timeMeasurement.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Service.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/Property.hpp:
+
+/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/rtt/os/TimeService.hpp:
 
 /home/dmia/workspace/workspaceEclipse/ORO_TYPE_base-types/State.h:
 

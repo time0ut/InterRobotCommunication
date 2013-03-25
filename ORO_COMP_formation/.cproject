@@ -36,9 +36,12 @@
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.451963106" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1512758112" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
-									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/local/include"/>
-									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include/orocos"/>
-									<listOptionValue builtIn="false" value="/opt/orocos-toolchain/install/include"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_component_tools}&quot;"/>
+									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/boost-arm-eabi/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/xeno-arm-eabi/usr/xenomai/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include"/>
+									<listOptionValue builtIn="false" value="/opt/arm-eabi/oro-arm-corba-eabi_v2.4/include/orocos"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.2112456526" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="OROCOS_TARGET=gnulinux"/>
@@ -108,7 +111,7 @@
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.release.269428984" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.release"/>
 							<builder buildPath="${workspace_loc:/base-types/Release}" id="cdt.managedbuild.target.gnu.builder.exe.release.1560236626" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.release"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1263145888" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-							<tool command="arm-linux-g++" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.537910459" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
+							<tool command="arm-linux-g++" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.537910459" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release">
 								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.617660653" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.738730298" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1255203735" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
@@ -117,6 +120,7 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.1219505681" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_TYPE_base-types}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_component_tools}&quot;"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/include"/>
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/boost-arm-eabi/include"/>
 									<listOptionValue builtIn="false" value="/opt/arm-eabi/xeno-arm-eabi/usr/xenomai/include"/>
@@ -147,8 +151,12 @@
 									<listOptionValue builtIn="false" value="`pkg-config --libs orocos-rtt-xenomai-arm`"/>
 								</option>
 								<option id="gnu.cpp.link.option.flags.1215862092" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="" valueType="string"/>
-								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs"/>
-								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths"/>
+								<option id="gnu.cpp.link.option.libs.864233742" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
+									<listOptionValue builtIn="false" value="ORO_component_tools_Gumstix"/>
+								</option>
+								<option id="gnu.cpp.link.option.paths.1958715761" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/ORO_component_tools/Gumstix}&quot;"/>
+								</option>
 								<option id="gnu.cpp.link.option.userobjs.1923365589" name="Other objects" superClass="gnu.cpp.link.option.userobjs" valueType="userObjs">
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/ivy/libivy.a"/>
 									<listOptionValue builtIn="false" value="/home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a"/>

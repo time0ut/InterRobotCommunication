@@ -36,6 +36,7 @@ TimeMeasurement 	*_timeMeasurement;
 	enum MissionPhase {
 		INITIALIZATION,	/**< the component is in the initialization phase (configuration of the formation). */
 		FORMATION,		/**< the component is in the formation phase (the formation is deployed). */
+		TEST,           /**< the component is in the performance test phase*/
 	//	NONE
 	};
 

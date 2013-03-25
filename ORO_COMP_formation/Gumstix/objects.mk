@@ -4,5 +4,5 @@
 
 USER_OBJS := /home/dmia/InterRobotCommunication/gumstix/lib/ivy/libivy.a /home/dmia/InterRobotCommunication/gumstix/lib/libpcre.a
 
-LIBS :=
+LIBS := -lORO_component_tools_Gumstix
 
