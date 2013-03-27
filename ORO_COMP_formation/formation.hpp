@@ -16,7 +16,6 @@ namespace TTRK {
 
 #define COMPONENT_NAME "formation"
 #define VERSION 0.1
-#define DEBUG this->_debugNbPeriods!=0
 
 TimeMeasurement 	*_timeMeasurement;
 	/**
@@ -38,8 +37,8 @@ TimeMeasurement 	*_timeMeasurement;
 	enum MissionPhase {
 		INITIALIZATION,	/**< the component is in the initialization phase (configuration of the formation). */
 		FORMATION,		/**< the component is in the formation phase (the formation is deployed). */
-		TEST,           /**< the component is in the performance test phase*/
-	//	NONE
+		TEST          /**< the component is in the performance test phase*/
+
 	};
 
 
@@ -64,8 +63,8 @@ TimeMeasurement 	*_timeMeasurement;
 		 * Updates component state.
 		 *
 		 * Basically:
-		 * - The leader broadcasts it's position on the Ivy bus.
-		 * - The followers send leader position to their command law so as to copy its movements.
+		 * - The leader broadcasts the commands sent to its CICAS calculator (CICAS_UGV_TC parameters) on the Ivy bus.
+		 * - The followers send these values to their CICAS calculator so as to copy its movements.
 		 * - The robots that are neither leader nor followers don't do anything.
 		 */
 		void updateHook();
@@ -103,73 +102,45 @@ TimeMeasurement 	*_timeMeasurement;
 		void ivyLoop();
 
 		/**
-			 * Call this to send a message through the Ivy bus.
-			 */
-		void ivySendMsg( ::string msg );
-
-
-		/**
-		 * Calls the MoveTo function of the command law.
-		 * Format: MoveTo(x, y, repere) where repere = 'L' (local) or 'G' (GPS)
+		 * Call this to broadcast a message through the Ivy bus.
+		 *
+		 * @param msg is the message to send through the Ivy bus
 		 */
-		RTT::OperationCaller<bool(double,double,char) > c_cmdLawMoveTo;
+		void ivySendMsg( std::string msg );
 
+		////////////////////////// Ports
 		/**
-		 * Calls the Rotate function of the command law.
-		 * Format: Rotate (angle)
-		 */
-		RTT::OperationCaller<bool(double) > c_cmdLawRotate;
-
-		/**
-		 * Calls the IsRunning function of the command law.
-		 *  Allows to know if it is currently working or ready to be used.
-		 */
-		RTT::OperationCaller<bool() > c_cmdLawIsRunning;
-
-		RTT::OperationCaller< int (CICAS_UGV_TC*) > c_sendCommandToCICAS;
-
-		// Ports
-		/**
-		 * Relative position read from the output of the SLAM.
-		 */
-		RTT::InputPort<PositionLocale> ip_relativePosition;
-		RTT::InputPort<SystemState> ip_systemState;
-
-		/**
-		 * Joystick format position sent to the command law.
-		 */
-		RTT::OutputPort<TypeInfosJoystickMavLink> op_joystick;
-
-		/**
-		 * TODO
+		 * TC values sent by the command law to the CICAS calculator (in the leader environment)
 		 */
 		RTT::InputPort<CICAS_UGV_TC> ip_cicas_tc;
 
-		// Properties
+		/**
+		 * TC sent to the CICAS calculator (in the follower environment)
+		 */
+		RTT::OutputPort<CICAS_UGV_TC> op_cicas_tc;
+
+		////////////////////////// Properties
 		/**
 		 * Robot ID number. This has to be set in the deployer file.
 		 */
-		int p_identifier;
+		int p_idnumber;
 
-
-		// TMP debug ; frequency
+		/**
+		 * The leader broadcasts on Ivy bus the TC sent by its command law to its CICAS every
+		 * p_refresh_period calls to updateHook.
+		 */
 		int p_refresh_period;
 
-
 		/**
-		 * For debug
-		 * @see other components.
+		 * desired number of followers in the formation.
 		 */
-		int _debugNbPeriods;
+		int p_nb_followers;
 
-		// Member data
+		////////////////////////// Data member
 		/**
-		 * Current local position of the robot.
+		 * TC values, CICAS format
 		 */
-		PositionLocale _relative_position;
 		CICAS_UGV_TC	_cicas_tc;
-		SystemState		_system_state;
-//		double _delta_x, _delta_y;
 
 	};
 
