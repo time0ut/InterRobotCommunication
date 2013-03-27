@@ -279,9 +279,6 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	filters.insert( pair<string, MsgRcvPtr> ( "follow_yes",
 			IvyBindMsg ( followYesCallback, 0, "^FOLLOW_YES (.*)" )));
 
-	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
-			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
-
 	filters.insert( pair<string, MsgRcvPtr> ( "do_test",
 			IvyBindMsg ( doTestCallback, 0, "^DO_TEST" )));
 
