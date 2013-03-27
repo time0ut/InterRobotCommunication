@@ -166,6 +166,7 @@ void formation::updateHook()
 		{
 			static int seq (0);
 			_timeMeasurement->startPoint();
+			this->p_refresh_period = 50;
 			
 			// Send to ivy bus the TEST message
 			IvySendMsg("TEST %d %d 12345678901234567890", seq++,*followeri);//?followeri indicate which follower should send the ech
@@ -281,12 +282,15 @@ void doDemoCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 	filters.insert( pair<string, MsgRcvPtr> ( "stop_demo",
 			IvyBindMsg ( stopDemoCallback, 0, "^STOP_DEMO$" )));
 
+	filters.insert( pair<string, MsgRcvPtr> ( "do_test",
+			IvyBindMsg ( doTestCallback, 0, "^DO_TEST" )));
+
 	// Ask for candidate followers
 	IvySendMsg("FOLLOW_REQ");
 }
 void doTestCallback (IvyClientPtr app, void *data, int cargc, char **argv)
 {
-	// Desactivate do demo request
+	// Deactivate do demo request
 
 	IvyUnbindMsg( filters.find ( "do_test" )->second );
 	filters.erase( filters.find("do_test") );
@@ -493,6 +497,14 @@ void stopDemoCallback (IvyClientPtr app, void *data, int argc, char **argv)
 			IvyUnbindMsg( filters.find ( "test_perf" )->second );
 			filters.erase ( filters.find ("test_perf" ));
 		}
+	}
+	else if (role == LEADER)
+	{
+		if ( filters.find ( "do_test" ) != filters.end() )
+				{
+					IvyUnbindMsg( filters.find ( "do_test" )->second );
+					filters.erase ( filters.find ("do_test" ));
+				}
 	}
 
 	// Back to normal mode
